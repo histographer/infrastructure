@@ -9,19 +9,16 @@ ENV=(
   IMS_URL1='ims.digipat.no'
   IMS_URL2='ims2.digipat.no'
   UPLOAD_URL='upload.digipat.no'
-
   ADMIN_EMAIL='info@cytomine.coop'
   SENDER_EMAIL_PASS='passwd'
   SENDER_EMAIL_SMTP_HOST='smtp.gmail.com'
   SENDER_EMAIL_SMTP_PORT='587'
   SENDER_EMAIL='your.email@gmail.com'
   RECEIVER_EMAIL='receiver@XXX.com'
-
   IMS_STORAGE_PATH=/data/images
   IMS_BUFFER_PATH=/data/images/_buffer
   BACKUP_PATH=/data/backup
   ALGO_PATH=/data/algo/
-
   RABBITMQ_LOGIN="router"
   RABBITMQ_PASS="router"
 
@@ -76,22 +73,22 @@ source .env
 
 # Find all files that end in .sample
 FILES=()
-while IFS= read -d $'\0' -r file ; do
-     FILES=("${FILES[@]}" "$file")
+while IFS= read -d $'\0' -r file; do
+  FILES=("${FILES[@]}" "$file")
 
 done < <(find . -name "*.sample" -not -path "./.git/*" -print0)
 
 #Replace contents of .sample files with env variables and create config files
 for i in ${FILES[@]}; do
-    cp "$i" "${i%%.sample}"
+  cp "$i" "${i%%.sample}"
 
-    for j in ${ENV[@]}; do
-      name=$(echo $j | cut -f1 -d "=")
-      value=$(echo $j | cut -f2 -d "=")
-      if [[ "$OSTYPE" == "darwin"* ]]; then #check if OSX
+  for j in ${ENV[@]}; do
+    name=$(echo $j | cut -f1 -d "=")
+    value=$(echo $j | cut -f2 -d "=")
+    if [[ "$OSTYPE" == "darwin"* ]]; then #check if OSX
       sed -i '' "s~\\\$${name}~${value}~g" ${i%%.sample}
-     else
+    else
       sed -i "s~\\\$${name}~${value}~g" ${i%%.sample}
-       fi
-    done
+    fi
+  done
 done
