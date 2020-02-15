@@ -88,7 +88,6 @@ for i in ${FILES[@]}; do
     for j in ${ENV[@]}; do
       name=$(echo $j | cut -f1 -d "=")
       value=$(echo $j | cut -f2 -d "=")
-      echo $(sed -i '' "s~\\\$${name}~${value}~g" ${i%%.sample})
-
+      sed -i '' "s~\\\$${name}~${value}~g" ${i%%.sample}
     done
 done
