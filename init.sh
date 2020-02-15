@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Delete env file if exist
 [ -e ".env" ] && rm ".env"
 
@@ -72,14 +74,21 @@ for var in ${ENV[@]}; do
 done
 source .env
 
-#Generate config files
-FILES=(configs/core/cytomineconfig.groovy configs/ims/imageserverconfig.properties configs/iipCyto/nginx.conf.sample configs/iipOff/nginx.conf.sample configs/nginx/nginx.conf configs/nginx/nginxDev.conf configs/nginx/dist/configuration.json configs/software_router/config.groovy start_deploy.sh hosts/core/addHosts.sh hosts/ims/addHosts.sh hosts/software_router/addHosts.sh)
+# Find all files that end in .sample
+FILES=()
+while IFS= read -d $'\0' -r file ; do
+     FILES=("${FILES[@]}" "$file")
+
+done < <(find . -name "*.sample" -not -path "./.git/*" -print0)
+
+#Replace contents of .sample files with env variables and create config files
 for i in ${FILES[@]}; do
-  if [ -f "$i.sample" ]; then
-    cp $i.sample $i
+    cp "$i" "${i%%.sample}"
 
     for j in ${ENV[@]}; do
-      eval sed -i "s~\\\$$j~\$$j~g" $i
+      name=$(echo $j | cut -f1 -d "=")
+      value=$(echo $j | cut -f2 -d "=")
+      echo $(sed -i '' "s~\\\$${name}~${value}~g" ${i%%.sample})
+
     done
-  fi
 done
