@@ -88,6 +88,10 @@ for i in ${FILES[@]}; do
     for j in ${ENV[@]}; do
       name=$(echo $j | cut -f1 -d "=")
       value=$(echo $j | cut -f2 -d "=")
+      if [[ "$OSTYPE" == "darwin"* ]]; then #check if OSX
       sed -i '' "s~\\\$${name}~${value}~g" ${i%%.sample}
+     else
+      sed -i "s~\\\$${name}~${value}~g" ${i%%.sample}
+       fi
     done
 done
