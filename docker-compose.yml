@@ -1,0 +1,146 @@
+version: '2.4'
+
+services:
+
+  rabbitmq:
+    image: 'cytomine/rabbitmq:v1.1.2'
+    restart: always
+    networks:
+      - network_3
+      - software_router
+    expose:
+      - '5672'
+      - '15672'
+
+
+  postgresql:
+    image: 'cytomine/postgis:v2.0.0'
+    restart: always
+    mem_limit: 8g
+    networks:
+      - network_3
+    volumes:
+      - "postgis_data:/var/lib/postgresql"
+
+
+  mongodb:
+    image: 'cytomine/mongodb:v1.1.2'
+    restart: always
+    networks:
+      - network_3
+    volumes:
+      - mongodb_data:/data/db
+
+
+  bioformat:
+    image: 'cytomine/bioformat:v1.1.2'
+    restart: always
+    networks:
+      - network_2
+    environment:
+      - "BIOFORMAT_PORT=${BIOFORMAT_PORT}"
+    volumes:
+      - "${IMS_STORAGE_PATH}:${IMS_STORAGE_PATH}"
+
+
+  memcached:
+    build:
+      context: "./memcached"
+    restart: always
+    networks:
+      - network_1
+
+
+  iipoff:
+    build:
+      context: "./iipOff"
+    depends_on:
+      - memcached
+    restart: always
+    privileged: true
+    networks:
+      - network_1
+      - nginx
+    environment:
+      - NB_IIP_PROCESS=$NB_IIP_PROCESS
+    volumes:
+      - "${IMS_STORAGE_PATH}:$IMS_STORAGE_PATH"
+
+
+  iipcyto:
+    build:
+      context: "./iipCyto"
+    restart: always
+    networks:
+      - network_1
+      - nginx
+    privileged: true
+    environment:
+      - NB_IIP_PROCESS=$NB_IIP_PROCESS
+    volumes:
+      - "${IMS_STORAGE_PATH}:${IMS_STORAGE_PATH}"
+
+
+  ims:
+    build:
+      context: "./ims"
+    restart: always
+    networks:
+      - network_2
+      - nginx
+    environment:
+      - "NB_IIP_PROCESS=${NB_IIP_PROCESS}"
+    volumes:
+      - "${IMS_STORAGE_PATH}:${IMS_STORAGE_PATH}"
+      - "${IMS_BUFFER_PATH}:/tmp/uploaded"
+
+  core:
+    build:
+      context: "./core"
+    networks:
+      - network_3
+      - nginx
+    volumes:
+    - "/etc/localtime:/etc/localtime"
+
+  nginx:
+    build:
+      context: "./nginx"
+    networks:
+      - nginx
+    volumes:
+    - "${IMS_BUFFER_PATH}:/tmp/uploaded"
+    ports:
+    - 80:80
+
+  software_router:
+    build:
+      context: ./software_router
+    privileged: true
+    depends_on:
+      - core
+    networks:
+      - software_router
+    environment:
+      - "CORE_URL=http://${CORE_URL}"
+      - "RABBITMQ_PUB_KEY=${RABBITMQ_PUB_KEY}"
+      - "RABBITMQ_PRIV_KEY=${RABBITMQ_PRIV_KEY}"
+    volumes:
+    - "${ALGO_PATH}:/software_router/algo/"
+
+
+
+
+volumes:
+  postgis_data:
+  mongodb_data:
+
+networks:
+  # TODO: lag bedre navn på nettverkene
+  network_1:
+  network_2:
+  network_3:
+  nginx:
+  software_router:
+
+
