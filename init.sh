@@ -18,7 +18,7 @@ ENV=(
   IMS_STORAGE_PATH=/data/images
   IMS_BUFFER_PATH=/data/images/_buffer
   BACKUP_PATH=/data/backup
-  ALGO_PATH=/data/algo/
+  ALGO_PATH=/data/algo
   RABBITMQ_LOGIN="router"
   RABBITMQ_PASS="router"
 
