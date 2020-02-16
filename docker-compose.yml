@@ -7,10 +7,10 @@ services:
     restart: always
     networks:
       network_3:
-        - aliases:
+        aliases:
             - rabbitmq
       software_router:
-        - aliases:
+        aliases:
             - rabbitmq
     expose:
       - '5672'
@@ -23,7 +23,7 @@ services:
     mem_limit: 8g
     networks:
       network_3:
-        - aliases:
+        aliases:
             - mongodb
     volumes:
       - "postgis_data:/var/lib/postgresql"
@@ -34,7 +34,7 @@ services:
     restart: always
     networks:
       network_3:
-        - aliases:
+        aliases:
             - mongodb
     volumes:
       - mongodb_data:/data/db
@@ -45,7 +45,7 @@ services:
     restart: always
     networks:
       network_2:
-        - aliases:
+        aliases:
             - iipoff
     environment:
       - "BIOFORMAT_PORT=${BIOFORMAT_PORT}"
@@ -59,7 +59,7 @@ services:
     restart: always
     networks:
       network_1:
-        - aliases:
+        aliases:
             - iipoff
 
 
@@ -72,10 +72,10 @@ services:
     privileged: true
     networks:
       network_1:
-        - aliases:
+        aliases:
             - iipoff
       nginx:
-        - aliases:
+        aliases:
             - iipoff
     environment:
       - NB_IIP_PROCESS=$NB_IIP_PROCESS
@@ -89,10 +89,10 @@ services:
     restart: always
     networks:
       network_1:
-        - aliases:
+        aliases:
             - iipcyto
       nginx:
-        - aliases:
+        aliases:
             - iipcyto
     privileged: true
     environment:
@@ -107,10 +107,10 @@ services:
     restart: always
     networks:
       network_2:
-        - aliases:
+        aliases:
             - ims
       nginx:
-        - aliases:
+        aliases:
             - ims
     environment:
       - "NB_IIP_PROCESS=${NB_IIP_PROCESS}"
@@ -123,10 +123,10 @@ services:
       context: "./core"
     networks:
       network_3:
-        - aliases:
+        aliases:
             - core
       nginx:
-        - aliases:
+        aliases:
             - core
     volumes:
     - "/etc/localtime:/etc/localtime"
@@ -136,7 +136,7 @@ services:
       context: "./nginx"
     networks:
       nginx:
-        - aliases:
+        aliases:
             - core
     volumes:
     - "${IMS_BUFFER_PATH}:/tmp/uploaded"
@@ -151,7 +151,7 @@ services:
       - core
     networks:
       software_router:
-        - aliases:
+        aliases:
             - software_router
     environment:
       - "CORE_URL=http://${CORE_URL}"
