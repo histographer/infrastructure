@@ -1,23 +1,7 @@
 #!/bin/bash
 
-echo "Configuring..."
-
-# Detect .env file
-if [[ -e ".env" ]]; then
- clear
- echo "ATTENTION!"
- echo " "
- echo "A .env file is detected in your current directory."
- echo "This likely means the init.sh script already have been run."
- echo "Before re-running, make sure to clean up your existing docker containers/volumes/networks to avoid bugs."
- echo "When ready, delete .env and re-run this script."
- exit 0
-fi
-
-#Generate config and env files
+# FILL IN BELOW (LEAVE BLANK FOR DEFAULT)
 ENV=(
-
-  # FILL IN BELOW (LEAVE BLANK FOR DEFAULT)
   CORE_URL='localhost-core'
   IMS_URL1='localhost-ims'
   IMS_URL2='localhost-ims2'
@@ -29,7 +13,7 @@ ENV=(
   SENDER_EMAIL='your.email@gmail.com'
   RECEIVER_EMAIL='receiver@XXX.com'
   IMS_STORAGE_PATH=/data/images
-  IMS_BUFFER_PATH=/data/images/_buffer
+  IMS_BUFFER_PATH=$/data/images/_buffer
   BACKUP_PATH=/data/backup
   ALGO_PATH=/data/algo
   RABBITMQ_LOGIN="router"
@@ -49,6 +33,38 @@ ENV=(
 
 )
 
+
+
+
+
+
+
+
+
+# DONT EDIT BENEATH THIS LINE
+
+# Detect .env file
+if [[ -e ".env" ]]; then
+ clear
+ echo "ATTENTION!"
+ echo " "
+ echo "A .env file is detected in your current directory."
+ echo "This likely means the init.sh script already have been run."
+ echo "Running again will generate new data such as admin password etc. and overwrite the old."
+ echo "Before doing this, ensure that you have cleaned up any previous instance of the bootstrapper."
+ read -r -p "Do you want to re-run the script? [y/N] " response
+ case "$response" in
+    [yY][eE][sS]|[yY])
+        clear
+        ;;
+    *)
+        exit 0;
+        ;;
+ esac
+fi
+
+
+echo "Configuring..."
 # Secret keys
 if [[ "$OSTYPE" == "darwin"* ]]; then #check if OSX
   ENV+=(
@@ -107,12 +123,15 @@ for i in ${FILES[@]}; do
 done
 
 
+# Build docker images
 docker-compose build
 
 
 clear
 echo "Cool, the server is now ready. Start it with:"
-echo "docker-compose up -d"
-echo "The login information for the admin user is available in the .env file"
+echo -e "\033[1mdocker-compose up -d\033[22m"
+echo " "
+echo -e "After a little while (depending on your hardware), the client should be available at \033[4;94mhttp://$(echo $CORE_URL)\033[0m"
+echo -e "Administrator login details are\033[1m admin\033[0m:\033[1m$(echo $ADMIN_PWD)\033[0m"
 echo " "
 echo "NOTE: The init.sh script should only be run once. "
