@@ -1,14 +1,27 @@
 #!/bin/bash
 
-# Delete env file if exist
-[ -e ".env" ] && rm ".env"
+echo "Configuring..."
+
+# Detect .env file
+if [[ -e ".env" ]]; then
+ clear
+ echo "ATTENTION!"
+ echo " "
+ echo "A .env file is detected in your current directory."
+ echo "This likely means the init.sh script already have been run."
+ echo "Before re-running, make sure to clean up your existing docker containers/volumes/networks to avoid bugs."
+ echo "When ready, delete .env and re-run this script."
+ exit 0
+fi
 
 #Generate config and env files
 ENV=(
-  CORE_URL='core.digipat.no'
-  IMS_URL1='ims.digipat.no'
-  IMS_URL2='ims2.digipat.no'
-  UPLOAD_URL='upload.digipat.no'
+
+  # FILL IN BELOW (LEAVE BLANK FOR DEFAULT)
+  CORE_URL='localhost'
+  IMS_URL1='localhost'
+  IMS_URL2='localhost'
+  UPLOAD_URL='localhost'
   ADMIN_EMAIL='info@cytomine.coop'
   SENDER_EMAIL_PASS='passwd'
   SENDER_EMAIL_SMTP_HOST='smtp.gmail.com'
@@ -92,3 +105,14 @@ for i in ${FILES[@]}; do
     fi
   done
 done
+
+
+docker-compose build
+
+
+clear
+echo "Cool, the server is now ready. Start it with:"
+echo "docker-compose up -d"
+echo "The login information for the admin user is available in the .env file"
+echo " "
+echo "NOTE: The init.sh script should only be run once. "
