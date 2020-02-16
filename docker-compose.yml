@@ -24,7 +24,7 @@ services:
     networks:
       network_3:
         aliases:
-            - mongodb
+            - postgresql
     volumes:
       - "postgis_data:/var/lib/postgresql"
 
@@ -46,7 +46,7 @@ services:
     networks:
       network_2:
         aliases:
-            - iipoff
+            - bioformat
     environment:
       - "BIOFORMAT_PORT=${BIOFORMAT_PORT}"
     volumes:
@@ -60,7 +60,7 @@ services:
     networks:
       network_1:
         aliases:
-            - iipoff
+            - memcached
 
 
   iipoff:
@@ -137,7 +137,7 @@ services:
     networks:
       nginx:
         aliases:
-            - core
+            - nginx
     volumes:
     - "${IMS_BUFFER_PATH}:/tmp/uploaded"
     ports:
