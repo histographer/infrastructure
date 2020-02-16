@@ -18,10 +18,10 @@ fi
 ENV=(
 
   # FILL IN BELOW (LEAVE BLANK FOR DEFAULT)
-  CORE_URL='localhost'
-  IMS_URL1='localhost'
-  IMS_URL2='localhost'
-  UPLOAD_URL='localhost'
+  CORE_URL='localhost-core'
+  IMS_URL1='localhost-ims'
+  IMS_URL2='localhost-ims2'
+  UPLOAD_URL='localhost-upload'
   ADMIN_EMAIL='info@cytomine.coop'
   SENDER_EMAIL_PASS='passwd'
   SENDER_EMAIL_SMTP_HOST='smtp.gmail.com'
