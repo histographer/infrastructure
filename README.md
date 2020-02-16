@@ -1,11 +1,11 @@
-# CYTOMINE DOCKER DEPLOYMENT #
+# HISTOGRAPHER BOOTSTRAPPER #
 
-
-## How to install it
+## How to install and run
 
 - Fill the init.sh file
 - Run the init.sh script
 - Run docker-compose up -d (-d is optional)
+
 
 ## Misc
 
