@@ -38,6 +38,8 @@ services:
             - mongodb
     volumes:
       - mongodb_data:/data/db
+    expose:
+      - '27017'
 
 
   bioformat:
@@ -119,6 +121,10 @@ services:
       - "${IMS_BUFFER_PATH}:/tmp/uploaded"
 
   core:
+    depends_on:
+      - mongodb
+      - postgresql
+      - rabbitmq
     build:
       context: "./core"
     networks:
@@ -132,6 +138,11 @@ services:
     - "/etc/localtime:/etc/localtime"
 
   nginx:
+    depends_on:
+      - core
+      - ims
+      - iipoff
+      - iipcyto
     build:
       context: "./nginx"
     networks:
