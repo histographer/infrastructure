@@ -27,5 +27,9 @@ And don't forget to add the following to your `/etc/hosts` file:
 
 View the logs of a specific service by running docker-compose logs -f <service>
 
+## Known errors:
 
+if you get:
+`ERROR: for <service>  UnixHTTPConnectionPool(host='localhost', port=None): Read timed out. (read timeout=60)`
+When running docker-compose, try using `COMPOSE_HTTP_TIMEOUT=120 docker-compose up`
 
