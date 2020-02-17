@@ -1,2 +1,12 @@
 .idea
 .env
+
+**/*.groovy
+**/addHosts.sh
+**/*.conf
+**/*.properties
+
+/iipCyto/nginx.conf.sample
+/iipOff/nginx.conf.sample
+
+/data
