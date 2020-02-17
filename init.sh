@@ -6,6 +6,7 @@ ENV=(
   IMS_URL1='localhost-ims'
   IMS_URL2='localhost-ims2'
   UPLOAD_URL='localhost-upload'
+  PAT_OR_NAT_FRONTEND_URL='localhost-pat-or-nat-frontend'
   ADMIN_EMAIL='info@cytomine.coop'
   SENDER_EMAIL_PASS='passwd'
   SENDER_EMAIL_SMTP_HOST='smtp.gmail.com'
