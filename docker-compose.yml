@@ -108,6 +108,9 @@ services:
       context: "./ims"
     restart: always
     networks:
+      network_1:
+        aliases:
+          - ims
       network_2:
         aliases:
             - ims
@@ -138,6 +141,23 @@ services:
     volumes:
     - "/etc/localtime:/etc/localtime"
 
+
+  digipat-frontend:
+    restart: always
+    build:
+      context: "./digipat-frontend"
+    networks:
+      nginx:
+        aliases:
+          - digipat-frontend
+    volumes:
+      - "${IMS_BUFFER_PATH}:/tmp/uploaded"
+    expose:
+      - '80'
+    ports:
+      - '8001:80'
+
+
   nginx:
     restart: always
     depends_on:
@@ -145,6 +165,7 @@ services:
       - ims
       - iipoff
       - iipcyto
+      - digipat-frontend
     build:
       context: "./nginx"
     networks:
