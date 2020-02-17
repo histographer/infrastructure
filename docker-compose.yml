@@ -154,8 +154,20 @@ services:
       - "${IMS_BUFFER_PATH}:/tmp/uploaded"
     expose:
       - '80'
-    ports:
-      - '8001:80'
+
+
+  pat-or-nat-frontend:
+    restart: always
+    build:
+      context: "./pat-or-nat-frontend"
+    networks:
+      nginx:
+        aliases:
+          - pat-or-nat-frontend
+    volumes:
+      - "${IMS_BUFFER_PATH}:/tmp/uploaded"
+    expose:
+      - '80'
 
 
   nginx:
@@ -166,6 +178,7 @@ services:
       - iipoff
       - iipcyto
       - digipat-frontend
+      - pat-or-nat-frontend
     build:
       context: "./nginx"
     networks:
