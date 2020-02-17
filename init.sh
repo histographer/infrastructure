@@ -55,6 +55,7 @@ if [[ -e ".env" ]]; then
  read -r -p "Do you want to re-run the script? [y/N] " response
  case "$response" in
     [yY][eE][sS]|[yY])
+        rm .env
         clear
         ;;
     *)
