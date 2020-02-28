@@ -43,6 +43,6 @@ for j in ${ENV[@]}; do
   if [[ "$OSTYPE" == "darwin"* ]]; then #check if OSX
     sed -i '' "s/^${name}=$/${name}=${value}/g" $dst
   else
-    sed -i "s~\\\$${name}=~${name}=${value}~g" $dst
+    sed -i "s/^${name}=$/${name}=${value}/g" $dst
   fi
 done
