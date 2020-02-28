@@ -171,7 +171,7 @@ services:
     restart: always
     build:
       context: "./digipat-frontend"
-    image: "docker.pkg.github.com/histographer/infrastructure/digipat-frontend"
+    image: "docker.pkg.github.com/histographer/infrastructure/digipat-frontend-prod"
     networks:
       nginx:
         aliases:
