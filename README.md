@@ -21,6 +21,8 @@ And don't forget to add the following to your `/etc/hosts` file:
 127.0.0.1   localhost-ims2
 127.0.0.1   localhost-upload
 127.0.0.1   localhost-pat-or-nat-frontend
+127.0.0.1   localhost-pat-or-nat-backend
+127.0.0.1   localhost-analysis-rest-api
 ```
 
 ## Misc

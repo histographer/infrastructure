@@ -7,16 +7,31 @@ ENV=(
   IMS_URL2='localhost-ims2'
   UPLOAD_URL='localhost-upload'
   PAT_OR_NAT_FRONTEND_URL='localhost-pat-or-nat-frontend'
+  PAT_OR_NAT_BACKEND_URL='localhost-pat-or-nat-backend'
+  ANALYSIS_URL='localhost-analysis-rest-api'
+
+
   ADMIN_EMAIL='info@cytomine.coop'
   SENDER_EMAIL_PASS='passwd'
   SENDER_EMAIL_SMTP_HOST='smtp.gmail.com'
   SENDER_EMAIL_SMTP_PORT='587'
   SENDER_EMAIL='your.email@gmail.com'
   RECEIVER_EMAIL='receiver@XXX.com'
-  IMS_STORAGE_PATH=/data/images
-  IMS_BUFFER_PATH=/data/images/_buffer
-  BACKUP_PATH=/data/backup
-  ALGO_PATH=/data/algo
+
+
+  IMS_STORAGE_PATH=$(pwd)/data/images
+  IMS_BUFFER_PATH=$(pwd)/data/images/_buffer
+  BACKUP_PATH=$(pwd)/data/backup
+  ALGO_PATH=$(pwd)/data/algo
+  ANALYSIS_PATH=$(pwd)/data/analysis
+
+  PATORNAT_MONGODB_HOST="pat-or-nat-db"
+  PATORNAT_MONGODB_PORT="27017"
+  PATORNAT_MONGODB_USERNAME="user"
+  PATORNAT_MONGODB_DATABASE="pat-or-nat-user"
+  PATORNAT_MONGODB_ROOT_USERNAME="root"
+  PATORNAT_MONGODB_INITDB_DATABASE="pat-or-nat"
+
   RABBITMQ_LOGIN="router"
   RABBITMQ_PASS="router"
 
@@ -80,6 +95,8 @@ if [[ "$OSTYPE" == "darwin"* ]]; then #check if OSX
     IMS_PUB_KEY=$(/usr/bin/uuidgen)
     IMS_PRIV_KEY=$(/usr/bin/uuidgen)
     SERVER_ID=$(/usr/bin/uuidgen)
+    PATORNAT_MONGODB_PASSWORD=$(/usr/bin/uuidgen)
+    PATORNAT_MONGODB_ROOT_PASSWORD=$(/usr/bin/uuidgen)
   )
 else
   ENV+=(
@@ -93,6 +110,8 @@ else
     IMS_PUB_KEY=$(cat /proc/sys/kernel/random/uuid)
     IMS_PRIV_KEY=$(cat /proc/sys/kernel/random/uuid)
     SERVER_ID=$(cat /proc/sys/kernel/random/uuid)
+    PATORNAT_MONGODB_PASSWORD=$(cat /proc/sys/kernel/random/uuid)
+    PATORNAT_MONGODB_ROOT_PASSWORD=$(cat /proc/sys/kernel/random/uuid)
   )
 fi
 
