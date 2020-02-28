@@ -41,7 +41,6 @@ for j in ${ENV[@]}; do
   name=$(echo $j | cut -f1 -d "=")
   value=$(echo $j | cut -f2 -d "=")
   if [[ "$OSTYPE" == "darwin"* ]]; then #check if OSX
-    echo ${name}=
     sed -i '' "s/^${name}=$/${name}=${value}/g" $dst
   else
     sed -i "s~\\\$${name}=~${name}=${value}~g" $dst
