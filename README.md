@@ -1,4 +1,4 @@
-# HISTOGRAPHER BOOTSTRAPPER #
+# HISTOGRAPHER INFRASTRUCTURE #
 
 ## How to install and run
 
