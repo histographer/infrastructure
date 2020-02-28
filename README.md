@@ -2,8 +2,9 @@
 
 ## How to install and run
 
-- Fill the init.sh file
-- Run the init.sh script
+- Create a copy of .env.sample with the name .env
+- Fill the .env file where appropriate
+- - OPTIONAL: run ./generate_secrets.sh to fill empty secrets
 - Run docker-compose up -d (-d is optional)
 
 
