@@ -1,4 +1,7 @@
 FROM cytomine/ims:v1.2.2
 
-ADD imageserverconfig.properties /usr/share/tomcat7/.grails/imageserverconfig.properties
-ADD addHosts.sh /tmp/addHosts.sh
+ADD addHosts.sh.sample /tmp/addHosts.sh.sample
+ADD imageserverconfig.properties.sample /tmp/imageserverconfig.properties.sample
+
+ADD run.sh /tmp/run.sh
+ENTRYPOINT ["/tmp/run.sh"]
