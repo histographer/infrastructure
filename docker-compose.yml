@@ -188,7 +188,7 @@ services:
     restart: always
     build:
       context: "./pat-or-nat-frontend"
-    image: "docker.pkg.github.com/histographer/infrastructure/pat-or-nat-frontend"
+    image: "docker.pkg.github.com/histographer/infrastructure/pat-or-nat-frontend-prod"
     networks:
       nginx:
         aliases:
@@ -225,7 +225,7 @@ services:
     restart: always
     env_file:
       - ".env"
-    image: "docker.pkg.github.com/histographer/pat-or-nat-backend/pat-or-nat-backend:latest"
+    image: "docker.pkg.github.com/histographer/pat-or-nat-backend/pat-or-nat-backend"
     depends_on:
       - pat-or-nat-db
     networks:
@@ -246,7 +246,7 @@ services:
 
 
   analysis-rest-api:
-    image: "docker.pkg.github.com/histographer/analysis-rest-api/analysis-rest-api:latest"
+    image: "docker.pkg.github.com/histographer/analysis-rest-api/analysis-rest-api"
     env_file:
       - ".env"
     networks:
@@ -271,7 +271,7 @@ services:
       - analysis-rest-api
     build:
       context: "./nginx"
-    image: "docker.pkg.github.com/histographer/infrastructure/nginx"
+    image: "docker.pkg.github.com/histographer/infrastructure/nginx-prod"
     networks:
       nginx:
         aliases:
