@@ -3,6 +3,7 @@
 ENV=()
 
 echo "Generating secrets..."
+echo "!!!!NEVER store secrets in plaintext like this in a production environment, this is only for development purposes!!!!"
 # Secret keys
 if [[ "$OSTYPE" == "darwin"* ]]; then #check if OSX
   ENV+=(
