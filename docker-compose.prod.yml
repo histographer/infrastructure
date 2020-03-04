@@ -246,6 +246,9 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+    deploy:
+      placement:
+        constraints: [node.hostname == it2901-cytomine]
 
 
 
