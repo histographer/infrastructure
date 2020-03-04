@@ -1,4 +1,4 @@
-version: '2.4'
+version: '3.1'
 
 services:
 
@@ -24,7 +24,6 @@ services:
       - ".env"
     image: 'cytomine/postgis:v2.0.0'
     restart: always
-    mem_limit: 8g
     networks:
       network_3:
         aliases:
@@ -269,8 +268,6 @@ services:
       - pat-or-nat-frontend
       - pat-or-nat-backend
       - analysis-rest-api
-    build:
-      context: "./nginx"
     image: "docker.pkg.github.com/histographer/infrastructure/nginx-prod"
     networks:
       nginx:
@@ -316,5 +313,4 @@ networks:
   nginx:
   software_router:
   pat-or-nat:
-
 

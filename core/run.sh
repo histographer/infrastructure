@@ -12,6 +12,14 @@ function configure() {
     fi
   done <<<"$(env)"
 }
+function secretsToEnv() {
+  if [[ -d "/run/secrets" ]]; then
+    echo "Reading secrets"
+    while read FILE; do
+      export "$FILE=$(cat /run/secrets/$FILE)"
+    done <<<"$(ls /run/secrets)"
+  fi
+}; secretsToEnv
 
 configure /tmp/addHosts.sh.sample /tmp/addHosts.sh
 configure /tmp/cytomineconfig.groovy.sample /usr/share/tomcat7/.grails/cytomineconfig.groovy

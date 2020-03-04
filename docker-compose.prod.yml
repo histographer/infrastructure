@@ -1,8 +1,53 @@
 version: '3.7'
 
+
+volumes:
+  postgis_data:
+  mongodb_data:
+  pat-or-nat-data:
+
+networks:
+  network_1:
+  network_2:
+  network_3:
+  nginx:
+  software_router:
+  pat-or-nat:
+
+secrets:
+  ADMIN_PWD:
+    external: true
+  ADMIN_PUB_KEY:
+    external: true
+  ADMIN_PRIV_KEY:
+    external: true
+  SUPERADMIN_PUB_KEY:
+    external: true
+  SUPERADMIN_PRIV_KEY:
+    external: true
+  RABBITMQ_PUB_KEY:
+    external: true
+  RABBITMQ_PRIV_KEY:
+    external: true
+  IMS_PUB_KEY:
+    external: true
+  IMS_PRIV_KEY:
+    external: true
+  SERVER_ID:
+    external: true
+  PATORNAT_MONGODB_PASSWORD:
+    external: true
+  PATORNAT_MONGODB_ROOT_PASSWORD:
+    external: true
+  PATORNAT_INITDB_MONGODB_ROOT_PASSWORD:
+    external: true
+
+
 services:
 
   rabbitmq:
+    env_file:
+      - ".env"
     image: 'cytomine/rabbitmq:v1.1.2'
     restart: always
     networks:
@@ -18,9 +63,10 @@ services:
 
 
   postgresql:
+    env_file:
+      - ".env"
     image: 'cytomine/postgis:v2.0.0'
     restart: always
-    mem_limit: 8g
     networks:
       network_3:
         aliases:
@@ -30,6 +76,8 @@ services:
 
 
   mongodb:
+    env_file:
+      - ".env"
     image: 'cytomine/mongodb:v1.1.2'
     restart: always
     networks:
@@ -43,6 +91,8 @@ services:
 
 
   bioformat:
+    env_file:
+      - ".env"
     image: 'cytomine/bioformat:v1.1.2'
     restart: always
     networks:
@@ -54,10 +104,12 @@ services:
     volumes:
       - "${IMS_STORAGE_PATH}:${IMS_STORAGE_PATH}"
 
-
   memcached:
+    env_file:
+      - ".env"
     build:
       context: "./memcached"
+    image: "docker.pkg.github.com/histographer/infrastructure/memcached"
     restart: always
     networks:
       network_1:
@@ -66,8 +118,11 @@ services:
 
 
   iipoff:
+    env_file:
+      - ".env"
     build:
       context: "./iipOff"
+    image: "docker.pkg.github.com/histographer/infrastructure/iipoff"
     depends_on:
       - memcached
     restart: always
@@ -79,15 +134,16 @@ services:
       nginx:
         aliases:
           - iipoff
-    environment:
-      - NB_IIP_PROCESS=$NB_IIP_PROCESS
     volumes:
       - "${IMS_STORAGE_PATH}:$IMS_STORAGE_PATH"
 
 
   iipcyto:
+    env_file:
+      - ".env"
     build:
       context: "./iipCyto"
+    image: "docker.pkg.github.com/histographer/infrastructure/iipcyto"
     restart: always
     networks:
       network_1:
@@ -97,15 +153,19 @@ services:
         aliases:
           - iipcyto
     privileged: true
-    environment:
-      - NB_IIP_PROCESS=$NB_IIP_PROCESS
     volumes:
       - "${IMS_STORAGE_PATH}:${IMS_STORAGE_PATH}"
 
 
   ims:
+    env_file:
+      - ".env"
+    secrets:
+      - IMS_PUB_KEY
+      - IMS_PRIV_KEY
     build:
       context: "./ims"
+    image: "docker.pkg.github.com/histographer/infrastructure/ims"
     restart: always
     depends_on:
       - core
@@ -119,13 +179,24 @@ services:
       nginx:
         aliases:
           - ims
-    environment:
-      - "NB_IIP_PROCESS=${NB_IIP_PROCESS}"
     volumes:
       - "${IMS_STORAGE_PATH}:${IMS_STORAGE_PATH}"
       - "${IMS_BUFFER_PATH}:/tmp/uploaded"
 
   core:
+    env_file:
+      - ".env"
+    secrets:
+      - ADMIN_PWD
+      - ADMIN_PUB_KEY
+      - ADMIN_PRIV_KEY
+      - SUPERADMIN_PUB_KEY
+      - SUPERADMIN_PRIV_KEY
+      - IMS_PUB_KEY
+      - IMS_PRIV_KEY
+      - RABBITMQ_PRIV_KEY
+      - RABBITMQ_PUB_KEY
+      - SERVER_ID
     restart: always
     depends_on:
       - mongodb
@@ -133,6 +204,7 @@ services:
       - rabbitmq
     build:
       context: "./core"
+    image: "docker.pkg.github.com/histographer/infrastructure/core"
     networks:
       network_3:
         aliases:
@@ -143,9 +215,12 @@ services:
 
 
   digipat-frontend:
+    env_file:
+      - ".env"
     restart: always
     build:
       context: "./digipat-frontend"
+    image: "docker.pkg.github.com/histographer/infrastructure/digipat-frontend-prod"
     networks:
       nginx:
         aliases:
@@ -154,12 +229,21 @@ services:
       - "${IMS_BUFFER_PATH}:/tmp/uploaded"
     expose:
       - '80'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
 
 
   pat-or-nat-frontend:
+    env_file:
+      - ".env"
     restart: always
     build:
       context: "./pat-or-nat-frontend"
+    image: "docker.pkg.github.com/histographer/infrastructure/pat-or-nat-frontend-prod"
     networks:
       nginx:
         aliases:
@@ -171,28 +255,28 @@ services:
 
   # TODO: Should use the existing mongodb service later
   pat-or-nat-db:
+    env_file:
+      - ".env"
     image: mongo:latest
     restart: always
     networks:
       pat-or-nat:
         aliases:
           - pat-or-nat-db
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${PATORNAT_MONGODB_ROOT_USERNAME} # root username
-      MONGO_INITDB_ROOT_PASSWORD: ${PATORNAT_MONGODB_ROOT_PASSWORD} # root password
-      MONGO_INITDB_DATABASE: ${PATORNAT_MONGODB_INITDB_DATABASE} # in this case it is patornat
-      PATORNAT_MONGODB_USERNAME: ${PATORNAT_MONGODB_USERNAME} # For creation of r/w user
-      PATORNAT_MONGODB_PASSWORD: ${PATORNAT_MONGODB_PASSWORD} # password for r/w user
-      PATORNAT_MONGODB_DATABASE: ${PATORNAT_MONGODB_DATABASE} # database the user will have r/w access to
+    secrets:
+      - PATORNAT_INITDB_MONGODB_ROOT_PASSWORD
+      - PATORNAT_MONGODB_PASSWORD
     volumes:
       - pat-or-nat-data:/data/db
       - ./database/db-init/:/docker-entrypoint-initdb.d
-    expose:
-      - "27017"
 
   pat-or-nat-backend:
     restart: always
-    image: "docker.pkg.github.com/histographer/pat-or-nat-backend/pat-or-nat-backend:latest"
+    env_file:
+      - ".env"
+    secrets:
+      - PATORNAT_MONGODB_PASSWORD
+    image: "docker.pkg.github.com/histographer/pat-or-nat-backend/pat-or-nat-backend"
     depends_on:
       - pat-or-nat-db
     networks:
@@ -202,37 +286,35 @@ services:
       pat-or-nat:
         aliases:
           - pat-or-nat-backend
-    environment:
-      PATORNAT_MONGODB_HOST: ${PATORNAT_MONGODB_HOST}
-      PATORNAT_MONGODB_PORT: ${PATORNAT_MONGODB_PORT}
-      PATORNAT_MONGODB_USERNAME: ${PATORNAT_MONGODB_ROOT_USERNAME}
-      PATORNAT_MONGODB_PASSWORD: ${PATORNAT_MONGODB_ROOT_PASSWORD}
-      PATORNAT_MONGODB_DATABASE: ${PATORNAT_MONGODB_DATABASE}
-    expose:
-      - "8080"
 
 
   analysis-rest-api:
-    image: "docker.pkg.github.com/histographer/analysis-rest-api/analysis-rest-api:latest"
+    image: "docker.pkg.github.com/histographer/analysis-rest-api/analysis-rest-api"
+    env_file:
+      - ".env"
     networks:
       nginx:
         aliases:
           - analysis-rest-api
-    expose:
-      - "80"
+    deploy:
+      placement:
+        constraints: [node.hostname == digipat-analyse]
+
 
   nginx:
     restart: always
+    env_file:
+      - ".env"
     depends_on:
+      - digipat-frontend
       - core
       - ims
       - iipoff
       - iipcyto
-      - digipat-frontend
       - pat-or-nat-frontend
+      - pat-or-nat-backend
       - analysis-rest-api
-    build:
-      context: "./nginx"
+    image: "docker.pkg.github.com/histographer/infrastructure/nginx-prod"
     networks:
       nginx:
         aliases:
@@ -241,39 +323,33 @@ services:
       - "${IMS_BUFFER_PATH}:/tmp/uploaded"
     ports:
       - 80:80
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost-core:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   software_router:
+    env_file:
+      - ".env"
+    secrets:
+      - RABBITMQ_PUB_KEY
+      - RABBITMQ_PRIV_KEY
     build:
-      context: ./software_router
+      context: "./software_router"
+    image: "docker.pkg.github.com/histographer/infrastructure/software_router"
     privileged: true
     depends_on:
       - core
+      - nginx
     networks:
       software_router:
         aliases:
           - software_router
-    environment:
-      - "CORE_URL=http://${CORE_URL}"
-      - "RABBITMQ_PUB_KEY=${RABBITMQ_PUB_KEY}"
-      - "RABBITMQ_PRIV_KEY=${RABBITMQ_PRIV_KEY}"
     volumes:
       - "${ALGO_PATH}:/software_router/algo/"
 
 
 
-
-volumes:
-  postgis_data:
-  mongodb_data:
-  pat-or-nat-data:
-
-networks:
-  # TODO: lag bedre navn på nettverkene
-  network_1:
-  network_2:
-  network_3:
-  nginx:
-  software_router:
-  pat-or-nat:
 
 

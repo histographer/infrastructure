@@ -24,6 +24,11 @@ events {
 }
 
 
+upstream my_nodejs_upstream {
+	server 127.0.0.1:4567;
+	keepalive 64;
+}
+
 http {
 	include       mime.types;
 	default_type  application/octet-stream;

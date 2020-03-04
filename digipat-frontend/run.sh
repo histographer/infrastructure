@@ -12,6 +12,14 @@ function configure() {
     fi
   done <<<"$(env)"
 }
+function secretsToEnv() {
+  if [[ -d "/run/secrets" ]]; then
+    echo "Reading secrets"
+    while read FILE; do
+      export "$FILE=$(cat /run/secrets/$FILE)"
+    done <<<"$(ls /run/secrets)"
+  fi
+}; secretsToEnv
 
 configure /tmp/nginx.conf.sample /usr/local/nginx/conf/nginx.conf
 configure /tmp/configuration.json.sample /tmp/dist/configuration.json

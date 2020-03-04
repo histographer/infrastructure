@@ -15,6 +15,7 @@ Each folder in this repo represents a service, with all its config plus a docker
 For local development use:
 
 
+
 And don't forget to add the following to your `/etc/hosts` file:
 ```
 127.0.0.1   localhost-core
@@ -36,3 +37,7 @@ if you get:
 `ERROR: for <service>  UnixHTTPConnectionPool(host='localhost', port=None): Read timed out. (read timeout=60)`
 When running docker-compose, try using `COMPOSE_HTTP_TIMEOUT=120 docker-compose up`
 
+
+## Production
+
+`docker-compose -f docker-compose.prod.yml config | docker stack deploy -c - test`
