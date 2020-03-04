@@ -247,6 +247,11 @@ services:
       timeout: 10s
       retries: 5
     deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 5
+        window: 120s
       placement:
         constraints: [node.hostname == it2901-cytomine]
 
@@ -312,6 +317,11 @@ services:
         aliases:
           - analysis-rest-api
     deploy:
+      restart_policy:
+        condition: any
+        delay: 10s
+        max_attempts: 5
+        window: 120s
       placement:
         constraints: [node.hostname == digipat-analyse]
 
@@ -344,6 +354,11 @@ services:
       timeout: 10s
       retries: 5
     deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 5
+        window: 120s
       placement:
         constraints: [node.hostname == it2901-cytomine]
 
