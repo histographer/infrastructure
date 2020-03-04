@@ -103,6 +103,9 @@ services:
       - "BIOFORMAT_PORT=${BIOFORMAT_PORT}"
     volumes:
       - "${IMS_STORAGE_PATH}:${IMS_STORAGE_PATH}"
+    deploy:
+      placement:
+        constraints: [node.hostname == it2901-cytomine]
 
   memcached:
     env_file:
@@ -136,6 +139,9 @@ services:
           - iipoff
     volumes:
       - "${IMS_STORAGE_PATH}:$IMS_STORAGE_PATH"
+    deploy:
+      placement:
+        constraints: [node.hostname == it2901-cytomine]
 
 
   iipcyto:
@@ -155,6 +161,9 @@ services:
     privileged: true
     volumes:
       - "${IMS_STORAGE_PATH}:${IMS_STORAGE_PATH}"
+    deploy:
+      placement:
+        constraints: [node.hostname == it2901-cytomine]
 
 
   ims:
@@ -182,6 +191,9 @@ services:
     volumes:
       - "${IMS_STORAGE_PATH}:${IMS_STORAGE_PATH}"
       - "${IMS_BUFFER_PATH}:/tmp/uploaded"
+    deploy:
+      placement:
+        constraints: [node.hostname == it2901-cytomine]
 
   core:
     env_file:
@@ -328,6 +340,9 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+    deploy:
+      placement:
+        constraints: [node.hostname == it2901-cytomine]
 
   software_router:
     env_file:
@@ -348,6 +363,9 @@ services:
           - software_router
     volumes:
       - "${ALGO_PATH}:/software_router/algo/"
+    deploy:
+      placement:
+        constraints: [node.hostname == it2901-cytomine]
 
 
 

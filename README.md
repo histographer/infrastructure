@@ -40,4 +40,4 @@ When running docker-compose, try using `COMPOSE_HTTP_TIMEOUT=120 docker-compose 
 
 ## Production
 
-`docker-compose -f docker-compose.prod.yml config | docker stack deploy -c - test`
+`docker-compose -f docker-compose.prod.yml config | docker stack deploy -c - production`
