@@ -322,8 +322,7 @@ services:
         delay: 10s
         max_attempts: 5
         window: 120s
-      placement:
-        constraints: [node.hostname == digipat-analyse]
+
 
 
   nginx:
