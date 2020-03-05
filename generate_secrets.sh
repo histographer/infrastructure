@@ -1,49 +1,40 @@
 #!/bin/bash
 
-ENV=()
+echo "Removing old.."
+docker secret rm $(docker secret ls -q)
+rm DELETE_ME_SECRETS.txt
 
-echo "Generating secrets..."
-echo "!!!!NEVER store secrets in plaintext like this in a production environment, this is only for development purposes!!!!"
-# Secret keys
-if [[ "$OSTYPE" == "darwin"* ]]; then #check if OSX
-  ENV+=(
-    ADMIN_PWD=$(/usr/bin/uuidgen)
-    ADMIN_PUB_KEY=$(/usr/bin/uuidgen)
-    ADMIN_PRIV_KEY=$(/usr/bin/uuidgen)
-    SUPERADMIN_PUB_KEY=$(/usr/bin/uuidgen)
-    SUPERADMIN_PRIV_KEY=$(/usr/bin/uuidgen)
-    RABBITMQ_PUB_KEY=$(/usr/bin/uuidgen)
-    RABBITMQ_PRIV_KEY=$(/usr/bin/uuidgen)
-    IMS_PUB_KEY=$(/usr/bin/uuidgen)
-    IMS_PRIV_KEY=$(/usr/bin/uuidgen)
-    SERVER_ID=$(/usr/bin/uuidgen)
-    PATORNAT_MONGODB_PASSWORD=$(/usr/bin/uuidgen)
-    PATORNAT_MONGODB_ROOT_PASSWORD=$(/usr/bin/uuidgen)
-  )
-else
-  ENV+=(
-    ADMIN_PWD=$(cat /proc/sys/kernel/random/uuid)
-    ADMIN_PUB_KEY=$(cat /proc/sys/kernel/random/uuid)
-    ADMIN_PRIV_KEY=$(cat /proc/sys/kernel/random/uuid)
-    SUPERADMIN_PUB_KEY=$(cat /proc/sys/kernel/random/uuid)
-    SUPERADMIN_PRIV_KEY=$(cat /proc/sys/kernel/random/uuid)
-    RABBITMQ_PUB_KEY=$(cat /proc/sys/kernel/random/uuid)
-    RABBITMQ_PRIV_KEY=$(cat /proc/sys/kernel/random/uuid)
-    IMS_PUB_KEY=$(cat /proc/sys/kernel/random/uuid)
-    IMS_PRIV_KEY=$(cat /proc/sys/kernel/random/uuid)
-    SERVER_ID=$(cat /proc/sys/kernel/random/uuid)
-    PATORNAT_MONGODB_PASSWORD=$(cat /proc/sys/kernel/random/uuid)
-    PATORNAT_MONGODB_ROOT_PASSWORD=$(cat /proc/sys/kernel/random/uuid)
-  )
-fi
-
-dst=".env"
-for j in ${ENV[@]}; do
-  name=$(echo $j | cut -f1 -d "=")
-  value=$(echo $j | cut -f2 -d "=")
-  if [[ "$OSTYPE" == "darwin"* ]]; then #check if OSX
-    sed -i '' "s/^${name}=$/${name}=${value}/g" $dst
+echo "Creating secrets..."
+if [[ $* == *--dev* ]]; then
+  if [ ! -f /tmp/foo.txt ]; then
+    echo "You have to create a .env file from .env.sample first. Ensure that this does not already contain any secrets."
   else
-    sed -i "s/^${name}=$/${name}=${value}/g" $dst
+    printf "ADMIN_PWD=" >>.env && printf $(/usr/bin/uuidgen) >>.env
+    printf "\nADMIN_PUB_KEY=" >>.env && printf $(/usr/bin/uuidgen) >>.env
+    printf "\nADMIN_PRIV_KEY=" >>.env && printf $(/usr/bin/uuidgen) >>.env
+    printf "\nSUPERADMIN_PUB_KEY=" >>.env && printf $(/usr/bin/uuidgen) >>.env
+    printf "\nSUPERADMIN_PRIV_KEY=" >>.env && printf $(/usr/bin/uuidgen) >>.env
+    printf "\nRABBITMQ_PUB_KEY=" >>.env && printf $(/usr/bin/uuidgen) >>.env
+    printf "\nRABBITMQ_PRIV_KEY=" >>.env && printf $(/usr/bin/uuidgen) >>.env
+    printf "\nIMS_PUB_KEY=" >>.env && printf $(/usr/bin/uuidgen) >>.env
+    printf "\nIMS_PRIV_KEY=" >>.env && printf $(/usr/bin/uuidgen) >>.env
+    printf "\nSERVER_ID=" >>.env && printf $(/usr/bin/uuidgen) >>.env
+    printf "\nPATORNAT_MONGODB_PASSWORD=" >>.env && printf $(/usr/bin/uuidgen) >>.env
+    printf "\nPATORNAT_MONGODB_ROOT_PASSWORD=" >>.env && printf $(/usr/bin/uuidgen) >>.env
+    printf "\nPATORNAT_INITDB_MONGODB_ROOT_PASSWORD=" >>.env && printf $(/usr/bin/uuidgen) >>.env
   fi
-done
+else
+  printf "ADMIN_PWD: " >>DELETE_ME_SECRETS.txt && printf $(/usr/bin/uuidgen) | tee -a DELETE_ME_SECRETS.txt | docker secret create ADMIN_PWD -
+  printf "\nADMIN_PUB_KEY: " >>DELETE_ME_SECRETS.txt && printf $(/usr/bin/uuidgen) | tee -a DELETE_ME_SECRETS.txt | docker secret create ADMIN_PUB_KEY -
+  printf "\nADMIN_PRIV_KEY: " >>DELETE_ME_SECRETS.txt && printf $(/usr/bin/uuidgen) | tee -a DELETE_ME_SECRETS.txt | docker secret create ADMIN_PRIV_KEY -
+  printf "\nSUPERADMIN_PUB_KEY: " >>DELETE_ME_SECRETS.txt && printf $(/usr/bin/uuidgen) | tee -a DELETE_ME_SECRETS.txt | docker secret create SUPERADMIN_PUB_KEY -
+  printf "\nSUPERADMIN_PRIV_KEY: " >>DELETE_ME_SECRETS.txt && printf $(/usr/bin/uuidgen) | tee -a DELETE_ME_SECRETS.txt | docker secret create SUPERADMIN_PRIV_KEY -
+  printf "\nRABBITMQ_PUB_KEY: " >>DELETE_ME_SECRETS.txt && printf $(/usr/bin/uuidgen) | tee -a DELETE_ME_SECRETS.txt | docker secret create RABBITMQ_PUB_KEY -
+  printf "\nRABBITMQ_PRIV_KEY: " >>DELETE_ME_SECRETS.txt && printf $(/usr/bin/uuidgen) | tee -a DELETE_ME_SECRETS.txt | docker secret create RABBITMQ_PRIV_KEY -
+  printf "\nIMS_PUB_KEY: " >>DELETE_ME_SECRETS.txt && printf $(/usr/bin/uuidgen) | tee -a DELETE_ME_SECRETS.txt | docker secret create IMS_PUB_KEY -
+  printf "\nIMS_PRIV_KEY: " >>DELETE_ME_SECRETS.txt && printf $(/usr/bin/uuidgen) | tee -a DELETE_ME_SECRETS.txt | docker secret create IMS_PRIV_KEY -
+  printf "\nSERVER_ID: " >>DELETE_ME_SECRETS.txt && printf $(/usr/bin/uuidgen) | tee -a DELETE_ME_SECRETS.txt | docker secret create SERVER_ID -
+  printf "\nPATORNAT_MONGODB_PASSWORD: " >>DELETE_ME_SECRETS.txt && printf $(/usr/bin/uuidgen) | tee -a DELETE_ME_SECRETS.txt | docker secret create PATORNAT_MONGODB_PASSWORD -
+  printf "\nPATORNAT_MONGODB_ROOT_PASSWORD: " >>DELETE_ME_SECRETS.txt && printf $(/usr/bin/uuidgen) | tee -a DELETE_ME_SECRETS.txt | docker secret create PATORNAT_MONGODB_ROOT_PASSWORD -
+  printf "\nPATORNAT_INITDB_MONGODB_ROOT_PASSWORD: " >>DELETE_ME_SECRETS.txt && printf $(/usr/bin/uuidgen) | tee -a DELETE_ME_SECRETS.txt | docker secret create PATORNAT_INITDB_MONGODB_ROOT_PASSWORD -
+fi

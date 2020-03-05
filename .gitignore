@@ -1,5 +1,7 @@
 .idea
 .env
+DELETE_ME_SECRETS.txt
+
 
 **/*.groovy
 **/addHosts.sh
