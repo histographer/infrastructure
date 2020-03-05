@@ -103,9 +103,6 @@ services:
       - "BIOFORMAT_PORT=${BIOFORMAT_PORT}"
     volumes:
       - "${IMS_STORAGE_PATH}:${IMS_STORAGE_PATH}"
-    deploy:
-      placement:
-        constraints: [node.hostname == it2901-cytomine]
 
   memcached:
     env_file:
@@ -340,6 +337,11 @@ services:
         delay: 10s
         max_attempts: 5
         window: 120s
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://digipat-frontend:80"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   software_router:
     env_file:
