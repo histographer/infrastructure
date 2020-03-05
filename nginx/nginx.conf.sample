@@ -50,33 +50,51 @@ http {
 		location / {
 			proxy_set_header X-Real-IP $remote_addr;
 			proxy_set_header Host $host;
-			proxy_pass http://digipat-frontend:80;
+
+			resolver 127.0.0.11 valid=30s;
+			set $remoteServer http://digipat-frontend:80;
+			proxy_pass http://$remoteServer;
 		}
 		location /api {
 			proxy_set_header X-Real-IP $remote_addr;
 			proxy_set_header Host $host;
-			proxy_pass http://core:8080;
+
+			resolver 127.0.0.11 valid=30s;
+			set $remoteServer http://core:8080;
+			proxy_pass http://$remoteServer;
 		}
 		location /j_spring_security {
 			# check and logout
 			proxy_set_header X-Real-IP $remote_addr;
 			proxy_set_header Host $host;
-			proxy_pass http://core:8080;
+
+			resolver 127.0.0.11 valid=30s;
+			set $remoteServer http://core:8080;
+			proxy_pass http://$remoteServer;
 		}
 		location ~ /(login|logout) {
 			proxy_set_header X-Real-IP $remote_addr;
 			proxy_set_header Host $host;
-			proxy_pass http://core:8080;
+
+			resolver 127.0.0.11 valid=30s;
+			set $remoteServer http://core:8080;
+			proxy_pass http://$remoteServer;
 		}
 		location ~ /(server|session|custom-ui|static) {
 			proxy_set_header X-Real-IP $remote_addr;
 			proxy_set_header Host $host;
-			proxy_pass http://core:8080;
+
+			resolver 127.0.0.11 valid=30s;
+			set $remoteServer http://core:8080;
+			proxy_pass http://$remoteServer;
 		}
 		location ~ /(restApiDoc|js/jsondoc|css/jsondoc) {
 			proxy_set_header X-Real-IP $remote_addr;
 			proxy_set_header Host $host;
-			proxy_pass http://core:8080;
+
+			resolver 127.0.0.11 valid=30s;
+			set $remoteServer http://core:8080;
+			proxy_pass http://$remoteServer;
 		}
 
 	}
@@ -88,7 +106,10 @@ http {
 		location / {
 			add_header Access-Control-Allow-Origin *;
 			proxy_set_header Host $host;
-			proxy_pass http://ims:8080;
+
+			resolver 127.0.0.11 valid=30s;
+			set $remoteServer http://ims:8080;
+			proxy_pass http://$remoteServer;
 		}
 	}
 	server {
@@ -99,7 +120,10 @@ http {
 		location / {
 			add_header Access-Control-Allow-Origin *;
 			proxy_set_header Host $host;
-			proxy_pass http://ims:8080;
+
+			resolver 127.0.0.11 valid=30s;
+			set $remoteServer http://ims:8080;
+			proxy_pass http://$remoteServer;
 		}
 	}
 	server {
@@ -140,8 +164,11 @@ http {
 		# Pass altered request body to a backend
 		location @test {
 			add_header 'Access-Control-Allow-Origin' '*';
-			proxy_pass   http://ims:8080;
 			proxy_read_timeout 600;
+
+			resolver 127.0.0.11 valid=30s;
+			set $remoteServer http://ims:8080;
+			proxy_pass http://$remoteServer;
 		}
 		error_page   500 502 503 504  /50x.html;
 		location = /50x.html {
@@ -230,7 +257,7 @@ http {
 			proxy_set_header X-Forwarded-Server $host;
 			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 
-			resolver 127.0.0.11;
+			resolver 127.0.0.11 valid=30s;
 			set $remoteServer pat-or-nat-backend:8080;
 			proxy_pass http://$remoteServer;
 		}
