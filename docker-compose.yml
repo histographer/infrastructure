@@ -257,11 +257,6 @@ services:
       - "${IMS_BUFFER_PATH}:/tmp/uploaded"
     expose:
       - '80'
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
 
   # TODO: Should use the existing mongodb service later
   pat-or-nat-db:
