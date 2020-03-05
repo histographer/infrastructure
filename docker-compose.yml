@@ -332,11 +332,6 @@ services:
       - "${IMS_BUFFER_PATH}:/tmp/uploaded"
     ports:
       - 80:80
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost-core:80"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
     deploy:
       restart_policy:
         condition: on-failure
