@@ -22,3 +22,6 @@ And don't forget to add the following to your `/etc/hosts` file:
 - run `./generate_secrets.sh` to create docker secrets
 - run `docker-compose config | docker stack deploy -c - prod` to deploy
 
+# Update services
+To push a new version of a service with its own dockerfile in this repo, use:
+`docker-compose build <service> && docker-compose push <service>`

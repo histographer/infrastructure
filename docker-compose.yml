@@ -324,6 +324,8 @@ services:
       - pat-or-nat-backend
       - analysis-rest-api
     image: "docker.pkg.github.com/histographer/infrastructure/nginx-prod"
+    build:
+      context: "./nginx"
     networks:
       nginx:
         aliases:
