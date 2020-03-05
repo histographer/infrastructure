@@ -335,7 +335,7 @@ services:
     ports:
       - 80:80
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost-core:80"]
+      test: ["CMD", "curl", "-f", "http://digipat-frontend:80"]
       interval: 10s
       timeout: 10s
       retries: 20
