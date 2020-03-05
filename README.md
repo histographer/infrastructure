@@ -1,20 +1,12 @@
 # HISTOGRAPHER INFRASTRUCTURE #
 
-## How to install and run
+# Installation
+- Create a copy of `.env.sample` with the name `.env`
+- Fill the `.env` file where appropriate
 
-- Create a copy of .env.sample with the name .env
-- Fill the .env file where appropriate
-- - OPTIONAL: run ./generate_secrets.sh to fill empty secrets
-- Run docker-compose up -d (-d is optional)
-
-
-## Folder structure
-Each folder in this repo represents a service, with all its config plus a dockerfile inside.
-
-## Local development
-For local development use:
-
-
+## Local Development
+- run `./generate_secrets.sh --dev` to fill .env with secrets for local development
+- run `docker-compose up -d` to deploy
 
 And don't forget to add the following to your `/etc/hosts` file:
 ```
@@ -26,18 +18,7 @@ And don't forget to add the following to your `/etc/hosts` file:
 127.0.0.1   localhost-pat-or-nat-backend
 127.0.0.1   localhost-analysis-rest-api
 ```
+## Production 
+- run `./generate_secrets.sh` to create docker secrets
+- run `docker-compose config | docker stack deploy -c - prod` to deploy
 
-## Misc
-
-View the logs of a specific service by running docker-compose logs -f <service>
-
-## Known errors:
-
-if you get:
-`ERROR: for <service>  UnixHTTPConnectionPool(host='localhost', port=None): Read timed out. (read timeout=60)`
-When running docker-compose, try using `COMPOSE_HTTP_TIMEOUT=120 docker-compose up`
-
-
-## Production
-
-`docker-compose -f docker-compose.prod.yml config | docker stack deploy -c - prod --with-registry-auth`
