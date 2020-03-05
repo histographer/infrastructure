@@ -24,11 +24,6 @@ events {
 }
 
 
-upstream my_nodejs_upstream {
-	server 127.0.0.1:4567;
-	keepalive 64;
-}
-
 http {
 	include       mime.types;
 	default_type  application/octet-stream;
@@ -163,7 +158,10 @@ http {
 			proxy_set_header Host $host;
 			proxy_set_header X-Forwarded-Server $host;
 			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-			proxy_pass http://iipoff:80;
+
+			resolver 127.0.0.11;
+			set $remoteServer iipoff:80;
+			proxy_pass http://$remoteServer;
 		}
 	}
 	server {
@@ -176,7 +174,9 @@ http {
 			proxy_set_header Host $host;
 			proxy_set_header X-Forwarded-Server $host;
 			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-			proxy_pass http://iipcyto:80;
+			resolver 127.0.0.11;
+			set $remoteServer iipcyto:80;
+			proxy_pass http://$remoteServer;
 		}
 	}
 
@@ -192,7 +192,10 @@ http {
 			add_header Access-Control-Allow-Origin *;
 			proxy_set_header X-Real-IP $remote_addr;
 			proxy_set_header Host $host;
-			proxy_pass http://pat-or-nat-frontend:80;
+
+			resolver 127.0.0.11;
+			set $remoteServer pat-or-nat-frontend:80;
+			proxy_pass http://$remoteServer;
 		}
 
 	}
@@ -207,12 +210,16 @@ http {
 			proxy_set_header Host $host;
 			proxy_set_header X-Forwarded-Server $host;
 			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-			proxy_pass http://analysis-rest-api:80;
+
+			resolver 127.0.0.11;
+			set $remoteServer analysis-rest-api:80;
+			proxy_pass http://$remoteServer;
 		}
 	}
 
 
 	server {
+
 		client_max_body_size 0;
 		listen       80;
 		server_name  $PAT_OR_NAT_BACKEND_URL;
@@ -222,7 +229,10 @@ http {
 			proxy_set_header Host $host;
 			proxy_set_header X-Forwarded-Server $host;
 			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-			proxy_pass http://pat-or-nat-backend:8080;
+
+			resolver 127.0.0.11;
+			set $remoteServer pat-or-nat-backend:8080;
+			proxy_pass http://$remoteServer;
 		}
 	}
 }
