@@ -6,7 +6,7 @@ rm DELETE_ME_SECRETS.txt
 
 echo "Creating secrets..."
 if [[ $* == *--dev* ]]; then
-  if [ ! -f /tmp/foo.txt ]; then
+  if [ -f .env ]; then
     echo "You have to create a .env file from .env.sample first. Ensure that this does not already contain any secrets."
   else
     printf "ADMIN_PWD=" >>.env && printf $(/usr/bin/uuidgen) >>.env
