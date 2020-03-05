@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Removing old.."
+echo "Removing old secrets (if they exist)"
 docker secret rm $(docker secret ls -q)
 rm DELETE_ME_SECRETS.txt
 
