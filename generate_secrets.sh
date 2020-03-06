@@ -19,9 +19,9 @@ if [[ $* == *--dev* ]]; then
     printf "\nIMS_PUB_KEY=" >>.env && printf $(/usr/bin/uuidgen) >>.env
     printf "\nIMS_PRIV_KEY=" >>.env && printf $(/usr/bin/uuidgen) >>.env
     printf "\nSERVER_ID=" >>.env && printf $(/usr/bin/uuidgen) >>.env
-    printf "\nCOMPARE_MONGODB_PASSWORD=" >>.env && printf $(/usr/bin/uuidgen) >>.env
-    printf "\nCOMPARE_MONGODB_ROOT_PASSWORD=" >>.env && printf $(/usr/bin/uuidgen) >>.env
-    printf "\nCOMPARE_INITDB_MONGODB_ROOT_PASSWORD=" >>.env && printf $(/usr/bin/uuidgen) >>.env
+    printf "\nPATORNAT_MONGODB_PASSWORD=" >>.env && printf $(/usr/bin/uuidgen) >>.env
+    printf "\nPATORNAT_MONGODB_ROOT_PASSWORD=" >>.env && printf $(/usr/bin/uuidgen) >>.env
+    printf "\nPATORNAT_INITDB_MONGODB_ROOT_PASSWORD=" >>.env && printf $(/usr/bin/uuidgen) >>.env
   fi
 else
   printf "ADMIN_PWD: " >>DELETE_ME_SECRETS.txt && printf $(/usr/bin/uuidgen) | tee -a DELETE_ME_SECRETS.txt | docker secret create ADMIN_PWD -
@@ -34,7 +34,7 @@ else
   printf "\nIMS_PUB_KEY: " >>DELETE_ME_SECRETS.txt && printf $(/usr/bin/uuidgen) | tee -a DELETE_ME_SECRETS.txt | docker secret create IMS_PUB_KEY -
   printf "\nIMS_PRIV_KEY: " >>DELETE_ME_SECRETS.txt && printf $(/usr/bin/uuidgen) | tee -a DELETE_ME_SECRETS.txt | docker secret create IMS_PRIV_KEY -
   printf "\nSERVER_ID: " >>DELETE_ME_SECRETS.txt && printf $(/usr/bin/uuidgen) | tee -a DELETE_ME_SECRETS.txt | docker secret create SERVER_ID -
-  printf "\nCOMPARE_MONGODB_PASSWORD: " >>DELETE_ME_SECRETS.txt && printf $(/usr/bin/uuidgen) | tee -a DELETE_ME_SECRETS.txt | docker secret create COMPARE_MONGODB_PASSWORD -
-  printf "\nCOMPARE_MONGODB_ROOT_PASSWORD: " >>DELETE_ME_SECRETS.txt && printf $(/usr/bin/uuidgen) | tee -a DELETE_ME_SECRETS.txt | docker secret create COMPARE_MONGODB_ROOT_PASSWORD -
-  printf "\nCOMPARE_INITDB_MONGODB_ROOT_PASSWORD: " >>DELETE_ME_SECRETS.txt && printf $(/usr/bin/uuidgen) | tee -a DELETE_ME_SECRETS.txt | docker secret create COMPARE_INITDB_MONGODB_ROOT_PASSWORD -
+  printf "\nPATORNAT_MONGODB_PASSWORD: " >>DELETE_ME_SECRETS.txt && printf $(/usr/bin/uuidgen) | tee -a DELETE_ME_SECRETS.txt | docker secret create PATORNAT_MONGODB_PASSWORD -
+  printf "\nPATORNAT_MONGODB_ROOT_PASSWORD: " >>DELETE_ME_SECRETS.txt && printf $(/usr/bin/uuidgen) | tee -a DELETE_ME_SECRETS.txt | docker secret create PATORNAT_MONGODB_ROOT_PASSWORD -
+  printf "\nPATORNAT_INITDB_MONGODB_ROOT_PASSWORD: " >>DELETE_ME_SECRETS.txt && printf $(/usr/bin/uuidgen) | tee -a DELETE_ME_SECRETS.txt | docker secret create PATORNAT_INITDB_MONGODB_ROOT_PASSWORD -
 fi
