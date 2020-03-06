@@ -227,11 +227,6 @@ services:
       - "${IMS_BUFFER_PATH}:/tmp/uploaded"
     expose:
       - '80'
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
     deploy:
       restart_policy:
         condition: on-failure
@@ -331,17 +326,7 @@ services:
       - "${IMS_BUFFER_PATH}:/tmp/uploaded"
     ports:
       - 80:80
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 5
-        window: 120s
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://digipat-frontend:80"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
+
 
   software_router:
     env_file:

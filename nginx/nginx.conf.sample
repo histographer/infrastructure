@@ -157,9 +157,7 @@ http {
 			proxy_set_header X-Forwarded-Server $host;
 			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 
-			resolver 127.0.0.11 valid=30s;
-			set $remoteServer iipoff:80;
-			proxy_pass http://$remoteServer;
+			proxy_pass http://iipoff:80;
 		}
 	}
 	server {
@@ -173,9 +171,7 @@ http {
 			proxy_set_header X-Forwarded-Server $host;
 			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 
-			resolver 127.0.0.11 valid=30s;
-			set $remoteServer iipcyto:80;
-			proxy_pass http://$remoteServer;
+			proxy_pass http://iipcyto:80;
 		}
 	}
 
@@ -192,9 +188,7 @@ http {
 			proxy_set_header X-Real-IP $remote_addr;
 			proxy_set_header Host $host;
 
-			resolver 127.0.0.11 valid=30s;
-			set $remoteServer pat-or-nat-frontend:80;
-			proxy_pass http://$remoteServer;
+			proxy_pass http://pat-or-nat-frontend:80;
 		}
 
 	}
@@ -210,9 +204,7 @@ http {
 			proxy_set_header X-Forwarded-Server $host;
 			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 
-			resolver 127.0.0.11 valid=30s ;
-			set $remoteServer analysis-rest-api:80;
-			proxy_pass http://$remoteServer;
+			proxy_pass http://analysis-rest-api:80;
 		}
 	}
 
@@ -229,9 +221,7 @@ http {
 			proxy_set_header X-Forwarded-Server $host;
 			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 
-			resolver 127.0.0.11 valid=30s;
-			set $remoteServer pat-or-nat-backend:8080;
-			proxy_pass http://$remoteServer;
+			proxy_pass http://pat-or-nat-backend:8080;
 		}
 	}
 }
