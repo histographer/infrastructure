@@ -181,7 +181,7 @@ http {
 	server {
 		client_max_body_size 0;
 		listen       80;
-		server_name  $PAT_OR_NAT_FRONTEND_URL;
+		server_name  $COMPARE_FRONTEND_URL;
 
 		location / {
 			add_header Access-Control-Allow-Origin *;
@@ -213,7 +213,7 @@ http {
 
 		client_max_body_size 0;
 		listen       80;
-		server_name  $PAT_OR_NAT_BACKEND_URL;
+		server_name  $COMPARE_BACKEND_URL;
 
 		location / {
 			proxy_set_header X-Forwarded-Host $host;
