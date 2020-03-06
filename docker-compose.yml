@@ -35,11 +35,11 @@ secrets:
     external: true
   SERVER_ID:
     external: true
-  compare_MONGODB_PASSWORD:
+  COMPARE_MONGODB_PASSWORD:
     external: true
-  compare_MONGODB_ROOT_PASSWORD:
+  COMPARE_MONGODB_ROOT_PASSWORD:
     external: true
-  compare_INITDB_MONGODB_ROOT_PASSWORD:
+  COMPARE_INITDB_MONGODB_ROOT_PASSWORD:
     external: true
 
 
@@ -261,8 +261,8 @@ services:
         aliases:
           - compare-db
     secrets:
-      - compare_INITDB_MONGODB_ROOT_PASSWORD
-      - compare_MONGODB_PASSWORD
+      - COMPARE_INITDB_MONGODB_ROOT_PASSWORD
+      - COMPARE_MONGODB_PASSWORD
     volumes:
       - compare-data:/data/db
       - ./database/db-init/:/docker-entrypoint-initdb.d
@@ -272,7 +272,7 @@ services:
     env_file:
       - ".env"
     secrets:
-      - compare_MONGODB_PASSWORD
+      - COMPARE_MONGODB_PASSWORD
     image: "docker.pkg.github.com/histographer/compare-backend/compare-backend"
     depends_on:
       - compare-db
