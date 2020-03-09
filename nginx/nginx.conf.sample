@@ -45,6 +45,12 @@ http {
 		listen       80;
 		server_name  $CORE_URL;
 
+		add_header 'Access-Control-Allow-Origin' "$http_origin";
+		add_header 'Access-Control-Allow_Credentials' 'true';
+		add_header 'Access-Control-Allow-Headers' 'Authorization,Accept,Origin,DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range, X-CSRF-Token';
+		add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,PATCH';
+
+
 		location / {
 			proxy_set_header X-Real-IP $remote_addr;
 			proxy_set_header Host $host;
@@ -83,8 +89,12 @@ http {
 		listen       80;
 		server_name  $IMS_URL1;
 
+		add_header 'Access-Control-Allow-Origin' "$http_origin";
+		add_header 'Access-Control-Allow_Credentials' 'true';
+		add_header 'Access-Control-Allow-Headers' 'Authorization,Accept,Origin,DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range, X-CSRF-Token';
+		add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,PATCH';
+
 		location / {
-			add_header Access-Control-Allow-Origin *;
 			proxy_set_header Host $host;
 			proxy_pass http://ims:8080;
 		}
@@ -94,8 +104,12 @@ http {
 		listen       80;
 		server_name  $IMS_URL2;
 
+		add_header 'Access-Control-Allow-Origin' "$http_origin";
+		add_header 'Access-Control-Allow_Credentials' 'true';
+		add_header 'Access-Control-Allow-Headers' 'Authorization,Accept,Origin,DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range, X-CSRF-Token';
+		add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,PATCH';
+
 		location / {
-			add_header Access-Control-Allow-Origin *;
 			proxy_set_header Host $host;
 			proxy_pass http://ims:8080;
 		}
@@ -104,6 +118,11 @@ http {
 		client_max_body_size 0;
 		listen       80;
 		server_name  $UPLOAD_URL;
+
+		add_header 'Access-Control-Allow-Origin' "$http_origin";
+		add_header 'Access-Control-Allow_Credentials' 'true';
+		add_header 'Access-Control-Allow-Headers' 'Authorization,Accept,Origin,DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range, X-CSRF-Token';
+		add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,PATCH';
 
 		# Upload form should be submitted to this location
 		location /upload {
@@ -128,12 +147,6 @@ http {
 			upload_pass_form_field "^submit$|^description$";
 
 			upload_pass_args on;
-
-			add_header 'Access-Control-Allow-Credentials' 'false';
-			add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
-			add_header 'Access-Control-Allow-Headers' 'Content-Type, Content-Range, Content-Disposition, Content-Description, date, dateFull, authorization,content-type-full';
-			add_header 'Access-Control-Max-Age' '1728000';
-			add_header 'Access-Control-Allow-Origin' '*';
 		}
 		# Pass altered request body to a backend
 		location @test {
@@ -151,6 +164,11 @@ http {
 		listen       80;
 		server_name  $IIP_OFF_URL;
 
+		add_header 'Access-Control-Allow-Origin' "$http_origin";
+		add_header 'Access-Control-Allow_Credentials' 'true';
+		add_header 'Access-Control-Allow-Headers' 'Authorization,Accept,Origin,DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range, X-CSRF-Token';
+		add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,PATCH';
+
 		location / {
 			proxy_set_header X-Forwarded-Host $host;
 			proxy_set_header Host $host;
@@ -164,6 +182,11 @@ http {
 		client_max_body_size 0;
 		listen       80;
 		server_name  $IIP_CYTO_URL;
+
+		add_header 'Access-Control-Allow-Origin' "$http_origin";
+		add_header 'Access-Control-Allow_Credentials' 'true';
+		add_header 'Access-Control-Allow-Headers' 'Authorization,Accept,Origin,DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range, X-CSRF-Token';
+		add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,PATCH';
 
 		location / {
 			proxy_set_header X-Forwarded-Host $host;
@@ -183,6 +206,11 @@ http {
 		listen       80;
 		server_name  $COMPARE_FRONTEND_URL;
 
+		add_header 'Access-Control-Allow-Origin' "$http_origin";
+		add_header 'Access-Control-Allow_Credentials' 'true';
+		add_header 'Access-Control-Allow-Headers' 'Authorization,Accept,Origin,DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range, X-CSRF-Token';
+		add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,PATCH';
+
 		location / {
 			add_header Access-Control-Allow-Origin *;
 			proxy_set_header X-Real-IP $remote_addr;
@@ -198,6 +226,11 @@ http {
 		listen       80;
 		server_name  $ANALYSIS_URL;
 
+		add_header 'Access-Control-Allow-Origin' "$http_origin";
+		add_header 'Access-Control-Allow_Credentials' 'true';
+		add_header 'Access-Control-Allow-Headers' 'Authorization,Accept,Origin,DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range, X-CSRF-Token';
+		add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,PATCH';
+
 		location / {
 			proxy_set_header X-Forwarded-Host $host;
 			proxy_set_header Host $host;
@@ -210,10 +243,14 @@ http {
 
 
 	server {
-
 		client_max_body_size 0;
 		listen       80;
 		server_name  $COMPARE_BACKEND_URL;
+
+		add_header 'Access-Control-Allow-Origin' "$http_origin";
+		add_header 'Access-Control-Allow_Credentials' 'true';
+		add_header 'Access-Control-Allow-Headers' 'Authorization,Accept,Origin,DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range, X-CSRF-Token';
+		add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,PATCH';
 
 		location / {
 			proxy_set_header X-Forwarded-Host $host;

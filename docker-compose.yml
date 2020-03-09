@@ -35,11 +35,11 @@ secrets:
     external: true
   SERVER_ID:
     external: true
-  COMPARE_MONGODB_PASSWORD:
+  PATORNAT_MONGODB_PASSWORD:
     external: true
-  COMPARE_MONGODB_ROOT_PASSWORD:
+  PATORNAT_MONGODB_ROOT_PASSWORD:
     external: true
-  COMPARE_INITDB_MONGODB_ROOT_PASSWORD:
+  PATORNAT_INITDB_MONGODB_ROOT_PASSWORD:
     external: true
 
 
@@ -261,8 +261,8 @@ services:
         aliases:
           - compare-db
     secrets:
-      - COMPARE_INITDB_MONGODB_ROOT_PASSWORD
-      - COMPARE_MONGODB_PASSWORD
+      - PATORNAT_INITDB_MONGODB_ROOT_PASSWORD
+      - PATORNAT_MONGODB_PASSWORD
     volumes:
       - compare-data:/data/db
       - ./database/db-init/:/docker-entrypoint-initdb.d
