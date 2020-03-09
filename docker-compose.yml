@@ -272,7 +272,7 @@ services:
     env_file:
       - ".env"
     secrets:
-      - COMPARE_MONGODB_PASSWORD
+      - PATORNAT_MONGODB_PASSWORD
     image: "docker.pkg.github.com/histographer/compare-backend/compare-backend"
     depends_on:
       - compare-db
