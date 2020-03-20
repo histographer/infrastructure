@@ -16,26 +16,32 @@ services:
 
   analysis_backend:
     image: docker.pkg.github.com/histographer/analysis-rest-api/analysis-rest-api:latest
-    container_name: analysis
-    restart: always
+    container_name: analysis_backend
+    env_file:
+      - ".env"
+    networks:
+      - compare
+    expose:
+      - 80
     labels:
       - "traefik.enable=true" # <== Enable traefik to proxy this container
       - "traefik.http.routers.compare-analysis.rule=Host(`analysis.digipat.no`)" # <== Your Domain Name goes here for the http rule
       - "traefik.http.routers.compare-analysis.entrypoints=web" # <== Defining the entrypoint for http, **ref: line 30
+      # - "traefik.http.routers.compare-front.middlewares=redirect@file" # <== This is a middleware to redirect to https
 
   compare_frontend:
-    image: docker.pkg.github.com/histographer/compare-frontend/compare-frontend:latest
+    image: docker.pkg.github.com/histographer/compare-frontend/compare-frontend:prod
     container_name: compare_frontend
     networks:
       - compare
     labels:
       - "traefik.enable=true" # <== Enable traefik to proxy this container
-      - "traefik.http.routers.compare-frontend.rule=Host(`front.localhost`)" # <== Your Domain Name goes here for the http rule
+      - "traefik.http.routers.compare-frontend.rule=Host(`compare.digipat.no`)" # <== Your Domain Name goes here for the http rule
       - "traefik.http.routers.compare-frontend.entrypoints=web" # <== Defining the entrypoint for http, **ref: line 30
       # - "traefik.http.routers.compare-front.middlewares=redirect@file" # <== This is a middleware to redirect to https
 
   compare_backend:
-    image: docker.pkg.github.com/histographer/compare-backend/compare-backend
+    image: docker.pkg.github.com/histographer/compare-backend/compare-backend:latest
     container_name: compare_backend
     env_file:
       - ".env"
