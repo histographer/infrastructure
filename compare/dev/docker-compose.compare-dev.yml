@@ -1,0 +1,105 @@
+version: '3'
+
+services:
+  mongo_dev:
+    image: mongo:latest
+    container_name: compare_mongo_dev
+    restart: always
+    env_file:
+      - ".env"
+    networks:
+      - compare
+    volumes:
+      - devmongodata:/data/db
+      - ./database/db-init/:/docker-entrypoint-initdb.d
+
+
+  analysis_backend_dev:
+    image: docker.pkg.github.com/histographer/analysis-rest-api/analysis-rest-api:latest
+    container_name: analysis_backend_dev
+    env_file:
+      - ".env"
+    networks:
+      - compare
+    expose:
+      - 80
+    labels:
+      - "traefik.enable=true" # <== Enable traefik to proxy this container
+      - "traefik.http.routers.dev-compare-analysis.rule=Host(`dev-analysis.digipat.no`)" # <== Your Domain Name goes here for the http rule
+      - "traefik.http.routers.dev-compare-analysis.entrypoints=web" # <== Defining the entrypoint for http, **ref: line 30
+      # - "traefik.http.routers.compare-front.middlewares=redirect@file" # <== This is a middleware to redirect to https
+
+  compare_frontend_dev:
+    image: docker.pkg.github.com/histographer/compare-frontend/compare-frontend:dev
+    container_name: compare_frontend_dev
+    networks:
+      - compare
+    labels:
+      - "traefik.enable=true" # <== Enable traefik to proxy this container
+      - "traefik.http.routers.dev-compare-frontend.rule=Host(`dev-compare.digipat.no`)" # <== Your Domain Name goes here for the http rule
+      - "traefik.http.routers.dev-compare-frontend.entrypoints=web" # <== Defining the entrypoint for http, **ref: line 30
+      # - "traefik.http.routers.compare-front.middlewares=redirect@file" # <== This is a middleware to redirect to https
+
+  compare_backend_dev:
+    image: docker.pkg.github.com/histographer/compare-backend/compare-backend:dev
+    container_name: compare_backend_dev
+    env_file:
+      - ".env"
+    networks:
+      - compare
+    labels:
+      - "traefik.enable=true" # <== Enable traefik to proxy this container
+      - "traefik.http.routers.dev-compare-backend.rule=Host(`dev-compare-api.digipat.no`)" # <== Your Domain Name goes here for the http rule
+      - "traefik.http.routers.dev-compare-backend.entrypoints=web" # <== Defining the entrypoint for http, **ref: line 30
+    
+
+  # ################################################
+  # ####        Traefik Proxy Setup           #####
+  # ###############################################
+  # traefik:
+  #   image: traefik:v2.0
+  #   restart: always
+  #   container_name: traefik
+  #   ports:
+  #     - "80:80" # <== http
+  #     - "8787:8080" # <== :8080 is where the dashboard runs on
+  #     #- "443:443" # <== https
+  #   command:
+  #   #### These are the CLI commands that will configure Traefik and tell it how to work! ####
+  #     ## API Settings - https://docs.traefik.io/operations/api/, endpoints - https://docs.traefik.io/operations/api/#endpoints ##
+  #     - --api.insecure=false # <== Enabling insecure api, NOT RECOMMENDED FOR PRODUCTION
+  #     - --api.dashboard=true # <== Enabling the dashboard to view services, middlewares, routers, etc...
+  #     - --api.debug=true # <== Enabling additional endpoints for debugging and profiling
+  #     ## Log Settings (options: ERROR, DEBUG, PANIC, FATAL, WARN, INFO) - https://docs.traefik.io/observability/logs/ ##
+  #     - --log.level=DEBUG # <== Setting the level of the logs from traefik
+  #     ## Provider Settings - https://docs.traefik.io/providers/docker/#provider-configuration ##
+  #     - --providers.docker=true # <== Enabling docker as the provider for traefik
+  #     # - --providers.docker.exposedbydefault=false # <== Don't expose every container to traefik, only expose enabled ones
+  #     #- --providers.file.filename=/dynamic.yaml # <== Referring to a dynamic configuration file
+  #     - --providers.docker.network=compare # <== Operate on the docker network named web
+  #     ## Entrypoints Settings - https://docs.traefik.io/routing/entrypoints/#configuration ##
+  #     - --entrypoints.web.address=:80 # <== Defining an entrypoint for port :80 named web
+  #     #- --entrypoints.web-secured.address=:443 # <== Defining an entrypoint for https on port :443 named web-secured
+  #     ## Certificate Settings (Let's Encrypt) -  https://docs.traefik.io/https/acme/#configuration-examples ##
+  #     #- --certificatesresolvers.mytlschallenge.acme.tlschallenge=true # <== Enable TLS-ALPN-01 to generate and renew ACME certs
+  #     #- --certificatesresolvers.mytlschallenge.acme.email=kentaretorvik@gmail.com # <== Setting email for certs
+  #     #- --certificatesresolvers.mytlschallenge.acme.storage=/letsencrypt/acme.json # <== Defining acme file to store cert information
+  #   volumes:
+  #     #- ./letsencrypt:/letsencrypt # <== Volume for certs (TLS)
+  #     - /var/run/docker.sock:/var/run/docker.sock # <== Volume for docker admin
+  #     #- ./dynamic.yaml:/dynamic.yaml # <== Volume for dynamic conf file, **ref: line 27
+  #   networks:
+  #     - compare # <== Placing traefik on the network named web, to access containers on this network
+  #   labels:
+  #   #### Labels define the behavior and rules of the traefik proxy for this container ####
+  #     - "traefik.enable=true" # <== Enable traefik on itself to view dashboard and assign subdomain to view it
+  #     #- "traefik.http.middlewares.basic-auth.basicauth.users=kent:$$apr1$$FJ90YWAv$$dkJcLcO4FxdwSGwn0y5kd/"
+  #     - "traefik.http.routers.api.rule=Host(`api.localhost`)" # <== Setting the domain for the dashboard
+  #     - "traefik.http.routers.api.service=api@internal" # <== Enabling the api to be a service to access
+  #     # - "traefik.http.routers.api.middlewares=basic-auth"
+volumes:
+  devmongodata:
+      
+networks:
+  compare:
+    external: true
