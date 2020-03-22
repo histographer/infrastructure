@@ -26,6 +26,7 @@ services:
       # - --providers.docker.exposedbydefault=false # <== Don't expose every container to traefik, only expose enabled ones
       #- --providers.file.filename=/dynamic.yaml # <== Referring to a dynamic configuration file
       - --providers.docker.network=compare # <== Operate on the docker network named web
+      - --providers.docker.network=compare_dev # <== Operate on the docker network named web
       ## Entrypoints Settings - https://docs.traefik.io/routing/entrypoints/#configuration ##
       - --entrypoints.web.address=:80 # <== Defining an entrypoint for port :80 named web
       #- --entrypoints.web-secured.address=:443 # <== Defining an entrypoint for https on port :443 named web-secured
@@ -49,4 +50,6 @@ services:
 
 networks:
   compare:
+    external: true
+  compare_dev:
     external: true
