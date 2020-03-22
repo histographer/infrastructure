@@ -10,7 +10,7 @@ dataDirectory = "algo/data/"
 
 environment = "dev"
 
-cytomineCoreURL='http://$CORE_URL'
+cytomineCoreURL='http://$CORE_BACKEND_URL'
 rabbitUsername='$RABBITMQ_LOGIN'
 rabbitPassword='$RABBITMQ_PASS'
 groovyPath='/root/.sdkman/candidates/groovy/current/bin/groovy'

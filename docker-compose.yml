@@ -10,7 +10,7 @@ networks:
   network_1:
   network_2:
   network_3:
-  nginx:
+  traefik:
   software_router:
   compare:
 
@@ -99,8 +99,6 @@ services:
       network_2:
         aliases:
           - bioformat
-    environment:
-      - "BIOFORMAT_PORT=${BIOFORMAT_PORT}"
     volumes:
       - "${IMS_STORAGE_PATH}:${IMS_STORAGE_PATH}"
 
@@ -131,9 +129,12 @@ services:
       network_1:
         aliases:
           - iipoff
-      nginx:
+      traefik:
         aliases:
           - iipoff
+    labels:
+      - "traefik.http.routers.iipoff.rule=Host(`${IIP_OFF_URL}`)"
+      - "traefik.http.services.iipoff.loadbalancer.server.port=80"
     volumes:
       - "${IMS_STORAGE_PATH}:$IMS_STORAGE_PATH"
 
@@ -149,10 +150,13 @@ services:
       network_1:
         aliases:
           - iipcyto
-      nginx:
+      traefik:
         aliases:
           - iipcyto
     privileged: true
+    labels:
+      - "traefik.http.routers.myproxy.rule=Host(`${IIP_CYTO_URL}`)"
+      - "traefik.http.services.myservice.loadbalancer.server.port=80"
     volumes:
       - "${IMS_STORAGE_PATH}:${IMS_STORAGE_PATH}"
 
@@ -169,6 +173,9 @@ services:
     restart: always
     depends_on:
       - core
+    labels:
+      - "traefik.http.routers.ims.rule=Host(`${IMS_URL1}`)|| Host(`${IMS_URL2}`)"
+      - "traefik.http.services.ims.loadbalancer.server.port=8080"
     networks:
       network_1:
         aliases:
@@ -176,7 +183,7 @@ services:
       network_2:
         aliases:
           - ims
-      nginx:
+      traefik:
         aliases:
           - ims
     volumes:
@@ -198,21 +205,17 @@ services:
       - RABBITMQ_PUB_KEY
       - SERVER_ID
     restart: always
-    depends_on:
-      - mongodb
-      - postgresql
-      - rabbitmq
-    build:
-      context: "./core"
     image: "docker.pkg.github.com/histographer/infrastructure/core"
+    labels:
+      - "traefik.http.routers.core.rule=Host(`${CORE_BACKEND_URL}`)"
+      - "traefik.http.services.core.loadbalancer.server.port=8080"
     networks:
       network_3:
         aliases:
           - core
-      nginx:
+      traefik:
         aliases:
           - core
-
 
   digipat-frontend:
     env_file:
@@ -220,9 +223,11 @@ services:
     restart: always
     image: "docker.pkg.github.com/histographer/digipat-frontend/digipat-frontend"
     networks:
-      nginx:
+      traefik:
         aliases:
           - digipat-frontend
+    labels:
+      - "traefik.http.routers.digipat-frontend.rule=Host(`${CORE_FRONTEND_URL}`)"
     volumes:
       - "${IMS_BUFFER_PATH}:/tmp/uploaded"
     expose:
@@ -242,7 +247,7 @@ services:
     restart: always
     image: "docker.pkg.github.com/histographer/compare-frontend/compare-frontend"
     networks:
-      nginx:
+      traefik:
         aliases:
           - compare-frontend
     volumes:
@@ -277,7 +282,7 @@ services:
     depends_on:
       - compare-db
     networks:
-      nginx:
+      traefik:
         aliases:
           - compare-backend
       compare:
@@ -289,8 +294,11 @@ services:
     image: "docker.pkg.github.com/histographer/analysis-rest-api/analysis-rest-api"
     env_file:
       - ".env"
+    labels:
+      - "traefik.http.routers.analysis.rule=Host(`${ANALYSIS_URL}`)"
+      - "traefik.http.services.analysis.loadbalancer.server.port=80"
     networks:
-      nginx:
+      traefik:
         aliases:
           - analysis-rest-api
     deploy:
@@ -300,32 +308,21 @@ services:
         max_attempts: 5
         window: 120s
 
-
-
-  nginx:
+  traefik:
+    image: traefik:v2.1
     restart: always
     env_file:
       - ".env"
-    depends_on:
-      - digipat-frontend
-      - core
-      - ims
-      - iipoff
-      - iipcyto
-      - compare-frontend
-      - compare-backend
-      - analysis-rest-api
-    image: "docker.pkg.github.com/histographer/infrastructure/nginx-prod"
-    build:
-      context: "./nginx"
+    command: --api.insecure=true --providers.docker --accesslog=true
     networks:
-      nginx:
+      traefik:
         aliases:
-          - nginx
-    volumes:
-      - "${IMS_BUFFER_PATH}:/tmp/uploaded"
+          - reverse-proxy
     ports:
-      - 80:80
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
 
 
   software_router:
@@ -340,13 +337,14 @@ services:
     privileged: true
     depends_on:
       - core
-      - nginx
+      - traefik
     networks:
       software_router:
         aliases:
           - software_router
     volumes:
       - "${ALGO_PATH}:/software_router/algo/"
+
 
 
 
