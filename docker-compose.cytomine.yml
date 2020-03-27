@@ -80,25 +80,27 @@ services:
     env_file:
       - '.env'
     build:
-      context: './memcached'
+      context: './cytomine/memcached'
     image: 'docker.pkg.github.com/histographer/infrastructure/memcached'
     restart: always
     networks:
       network_1:
         aliases:
           - memcached
-    labels:
-      - 'traefik.enable=true' # <== Enable traefik on itself to view dashboard and assign subdomain to view it
 
   iipoff:
     env_file:
       - '.env'
     build:
-      context: './iipOff'
+      context: './cytomine/iipOff'
     image: 'docker.pkg.github.com/histographer/infrastructure/iipoff'
     depends_on:
       - memcached
     restart: always
+    labels:
+      - 'traefik.enable=true' # <== Enable traefik on itself to view dashboard and assign subdomain to view it
+      - 'traefik.http.routers.iipoff.rule=Host(`${IIP_OFF_URL}`)'
+      - 'traefik.http.routers.iipoff.entrypoints=web'
     networks:
       network_1:
         aliases:
@@ -106,10 +108,8 @@ services:
       traefik:
         aliases:
           - iipoff
-    labels:
-      - 'traefik.http.routers.iipoff.rule=Host(`${IIP_OFF_URL}`)'
-      - 'traefik.http.routers.iipoff.entrypoints=web'
-      - 'traefik.enable=true' # <== Enable traefik on itself to view dashboard and assign subdomain to view it
+    expose:
+      - '80'
 
     volumes:
       - '${IMS_STORAGE_PATH_HOST}:$IMS_STORAGE_PATH'
@@ -118,9 +118,13 @@ services:
     env_file:
       - '.env'
     build:
-      context: './iipCyto'
+      context: './cytomine/iipCyto'
     image: 'docker.pkg.github.com/histographer/infrastructure/iipcyto'
     restart: always
+    labels:
+      - 'traefik.enable=true' # <== Enable traefik on itself to view dashboard and assign subdomain to view it
+      - 'traefik.http.routers.iipcyto.rule=Host(`${IIP_CYTO_URL}`)'
+      - 'traefik.http.routers.iipcyto.entrypoints=web'
     networks:
       network_1:
         aliases:
@@ -128,25 +132,23 @@ services:
       traefik:
         aliases:
           - iipcyto
-    labels:
-      - 'traefik.http.routers.iipcyto.rule=Host(`${IIP_CYTO_URL}`)'
-      - 'traefik.http.routers.iipcyto.entrypoints=web'
-      - 'traefik.enable=true' # <== Enable traefik on itself to view dashboard and assign subdomain to view it
     volumes:
       - '${IMS_STORAGE_PATH_HOST}:${IMS_STORAGE_PATH}'
+    expose:
+      - '80'
 
   ims:
     env_file:
       - '.env'
     build:
-      context: './ims'
+      context: './cytomine/ims'
     image: 'docker.pkg.github.com/histographer/infrastructure/ims'
     restart: always
     depends_on:
       - core
     labels:
       - 'traefik.enable=true' # <== Enable traefik to proxy this container
-      - 'traefik.http.routers.ims.rule=Host(`${IMS_URL1}`,`${IMS_URL2}`, `${UPLOAD_URL}`)'
+      - 'traefik.http.routers.ims.rule=Host(`${IMS_URL1}`,`${IMS_URL2}`)'
       - 'traefik.http.routers.ims.middlewares=cors'
       - 'traefik.http.routers.ims.entrypoints=web'
     networks:
@@ -185,14 +187,14 @@ services:
       - '.env'
     restart: always
     image: 'docker.pkg.github.com/histographer/wizard-frontend/digipat-frontend'
-    networks:
-      traefik:
-        aliases:
-          - digipat-frontend
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.digipat-frontend.rule=Host(`${CORE_URL}`)'
       - 'traefik.http.routers.digipat-frontend.entrypoints=web'
+    networks:
+      traefik:
+        aliases:
+          - digipat-frontend
     volumes:
       - '${IMS_BUFFER_PATH_HOST}:/tmp/uploaded'
     expose:
@@ -202,7 +204,7 @@ services:
     env_file:
       - '.env'
     build:
-      context: './software_router'
+      context: './cytomine/software_router'
     image: 'docker.pkg.github.com/histographer/infrastructure/software_router'
     privileged: true
     depends_on:
@@ -213,29 +215,31 @@ services:
           - software_router
     volumes:
       - '${ALGO_PATH_HOST}:/software_router/algo/'
-    labels:
-      - 'traefik.enable=true' # <== Enable traefik on itself to view dashboard and assign subdomain to view it
 
   upload:
     env_file:
       - '.env'
     build:
-      context: './upload'
+      context: './cytomine/upload'
     image: 'docker.pkg.github.com/histographer/infrastructure/upload'
-    restart: always
+    depends_on:
+      - ims
+    labels:
+      - 'traefik.enable=true' # <== Enable traefik on itself to view dashboard and assign subdomain to view it
+      - 'traefik.http.routers.upload.rule=Host(`${UPLOAD_URL}`)'
+      - 'traefik.http.routers.upload.entrypoints=web'
+      - 'traefik.http.routers.ims.middlewares=cors'
     networks:
       network_1:
-        aliases:
-          - upload
-      traefik:
         aliases:
           - upload
       network_2:
         aliases:
           - upload
-    labels:
-      - 'traefik.http.routers.upload.rule=Host(`${UPLOAD_URL}`)'
-      - 'traefik.http.routers.upload.entrypoints=web'
-      - 'traefik.enable=true' # <== Enable traefik on itself to view dashboard and assign subdomain to view it
+      traefik:
+        aliases:
+          - upload
     volumes:
       - '${IMS_STORAGE_PATH_HOST}:${IMS_STORAGE_PATH}'
+    expose:
+      - '80'
