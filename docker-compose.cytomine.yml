@@ -1,0 +1,241 @@
+version: '3.7'
+
+volumes:
+  postgis_data:
+  mongodb_data:
+  IMS_STORAGE_VOLUME:
+  IMS_BUFFER_VOLUME:
+  ALGO_VOLUME:
+  ANALYSIS_VOLUME:
+  BACKUP_VOLUME:
+
+networks:
+  network_1:
+  network_2:
+  network_3:
+  software_router:
+  traefik:
+    external: true
+
+services:
+  rabbitmq:
+    env_file:
+      - '.env'
+    image: 'cytomine/rabbitmq:v1.1.2'
+    restart: always
+    networks:
+      network_3:
+        aliases:
+          - rabbitmq
+      software_router:
+        aliases:
+          - rabbitmq
+    expose:
+      - '5672'
+      - '15672'
+
+  postgresql:
+    env_file:
+      - '.env'
+    image: 'cytomine/postgis:v2.0.0'
+    restart: always
+    networks:
+      network_3:
+        aliases:
+          - postgresql
+    volumes:
+      - 'postgis_data:/var/lib/postgresql'
+
+  mongodb:
+    env_file:
+      - '.env'
+    image: 'cytomine/mongodb:v1.1.2'
+    restart: always
+    networks:
+      network_3:
+        aliases:
+          - mongodb
+    volumes:
+      - mongodb_data:/data/db
+    expose:
+      - '27017'
+    labels:
+      - 'traefik.enable=true' # <== Enableo traefik on itself to view dashboard and assign subdomain to view it
+
+  bioformat:
+    env_file:
+      - '.env'
+    image: 'cytomine/bioformat:v1.1.2'
+    restart: always
+    networks:
+      network_2:
+        aliases:
+          - bioformat
+    volumes:
+      - '${IMS_STORAGE_PATH_HOST}:${IMS_STORAGE_PATH}'
+    labels:
+      - 'traefik.enable=true' # <== Enable traefik on itself to view dashboard and assign subdomain to view it
+
+  memcached:
+    env_file:
+      - '.env'
+    build:
+      context: './memcached'
+    image: 'docker.pkg.github.com/histographer/infrastructure/memcached'
+    restart: always
+    networks:
+      network_1:
+        aliases:
+          - memcached
+    labels:
+      - 'traefik.enable=true' # <== Enable traefik on itself to view dashboard and assign subdomain to view it
+
+  iipoff:
+    env_file:
+      - '.env'
+    build:
+      context: './iipOff'
+    image: 'docker.pkg.github.com/histographer/infrastructure/iipoff'
+    depends_on:
+      - memcached
+    restart: always
+    networks:
+      network_1:
+        aliases:
+          - iipoff
+      traefik:
+        aliases:
+          - iipoff
+    labels:
+      - 'traefik.http.routers.iipoff.rule=Host(`${IIP_OFF_URL}`)'
+      - 'traefik.http.routers.iipoff.entrypoints=web'
+      - 'traefik.enable=true' # <== Enable traefik on itself to view dashboard and assign subdomain to view it
+
+    volumes:
+      - '${IMS_STORAGE_PATH_HOST}:$IMS_STORAGE_PATH'
+
+  iipcyto:
+    env_file:
+      - '.env'
+    build:
+      context: './iipCyto'
+    image: 'docker.pkg.github.com/histographer/infrastructure/iipcyto'
+    restart: always
+    networks:
+      network_1:
+        aliases:
+          - iipcyto
+      traefik:
+        aliases:
+          - iipcyto
+    labels:
+      - 'traefik.http.routers.iipcyto.rule=Host(`${IIP_CYTO_URL}`)'
+      - 'traefik.http.routers.iipcyto.entrypoints=web'
+      - 'traefik.enable=true' # <== Enable traefik on itself to view dashboard and assign subdomain to view it
+    volumes:
+      - '${IMS_STORAGE_PATH_HOST}:${IMS_STORAGE_PATH}'
+
+  ims:
+    env_file:
+      - '.env'
+    build:
+      context: './ims'
+    image: 'docker.pkg.github.com/histographer/infrastructure/ims'
+    restart: always
+    depends_on:
+      - core
+    labels:
+      - 'traefik.enable=true' # <== Enable traefik to proxy this container
+      - 'traefik.http.routers.ims.rule=Host(`${IMS_URL1}`,`${IMS_URL2}`, `${UPLOAD_URL}`)'
+      - 'traefik.http.routers.ims.middlewares=cors'
+      - 'traefik.http.routers.ims.entrypoints=web'
+    networks:
+      network_1:
+        aliases:
+          - ims
+      network_2:
+        aliases:
+          - ims
+      traefik:
+        aliases:
+          - ims
+    volumes:
+      - '${IMS_STORAGE_PATH_HOST}:${IMS_STORAGE_PATH}'
+      - '${IMS_BUFFER_PATH_HOST}:/tmp/uploaded'
+
+  core:
+    env_file:
+      - '.env'
+    restart: always
+    image: 'docker.pkg.github.com/histographer/infrastructure/core'
+    labels:
+      - 'traefik.enable=true' # <== Enable traefik to proxy this container
+      - 'traefik.http.routers.core.rule=Host(`${CORE_URL}`) && PathPrefix(`/api`, `/j_spring_security`, `/login`, `/logout`, `/server`, `/session`, `/custom-ui`, `/static`, `/restApiDoc`, `/js/jsondoc`, `/css/jsondoc`)'
+      - 'traefik.http.routers.core.entrypoints=web'
+    networks:
+      network_3:
+        aliases:
+          - core
+      traefik:
+        aliases:
+          - core
+
+  digipat-frontend:
+    env_file:
+      - '.env'
+    restart: always
+    image: 'docker.pkg.github.com/histographer/wizard-frontend/digipat-frontend'
+    networks:
+      traefik:
+        aliases:
+          - digipat-frontend
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.digipat-frontend.rule=Host(`${CORE_URL}`)'
+      - 'traefik.http.routers.digipat-frontend.entrypoints=web'
+    volumes:
+      - '${IMS_BUFFER_PATH_HOST}:/tmp/uploaded'
+    expose:
+      - '80'
+
+  software_router:
+    env_file:
+      - '.env'
+    build:
+      context: './software_router'
+    image: 'docker.pkg.github.com/histographer/infrastructure/software_router'
+    privileged: true
+    depends_on:
+      - core
+    networks:
+      software_router:
+        aliases:
+          - software_router
+    volumes:
+      - '${ALGO_PATH_HOST}:/software_router/algo/'
+    labels:
+      - 'traefik.enable=true' # <== Enable traefik on itself to view dashboard and assign subdomain to view it
+
+  upload:
+    env_file:
+      - '.env'
+    build:
+      context: './upload'
+    image: 'docker.pkg.github.com/histographer/infrastructure/upload'
+    restart: always
+    networks:
+      network_1:
+        aliases:
+          - upload
+      traefik:
+        aliases:
+          - upload
+      network_2:
+        aliases:
+          - upload
+    labels:
+      - 'traefik.http.routers.upload.rule=Host(`${UPLOAD_URL}`)'
+      - 'traefik.http.routers.upload.entrypoints=web'
+      - 'traefik.enable=true' # <== Enable traefik on itself to view dashboard and assign subdomain to view it
+    volumes:
+      - '${IMS_STORAGE_PATH_HOST}:${IMS_STORAGE_PATH}'
