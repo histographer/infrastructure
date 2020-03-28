@@ -73,8 +73,6 @@ services:
           - bioformat
     volumes:
       - '${IMS_STORAGE_PATH_HOST}:${IMS_STORAGE_PATH}'
-    labels:
-      - 'traefik.enable=true' # <== Enable traefik on itself to view dashboard and assign subdomain to view it
 
   memcached:
     env_file:
@@ -163,6 +161,7 @@ services:
           - ims
     volumes:
       - '${IMS_STORAGE_PATH_HOST}:${IMS_STORAGE_PATH}'
+      #- '${IMS_BUFFER_PATH_HOST}:/tmp/uploaded'
       - '${IMS_BUFFER_PATH_HOST}:/tmp/uploaded'
 
   core:
@@ -214,7 +213,7 @@ services:
         aliases:
           - software_router
     volumes:
-      - '${ALGO_PATH_HOST}:/software_router/algo/'
+      - '${ALGO_PATH_HOST}:/software_router/algo'
 
   upload:
     env_file:
@@ -228,7 +227,6 @@ services:
       - 'traefik.enable=true' # <== Enable traefik on itself to view dashboard and assign subdomain to view it
       - 'traefik.http.routers.upload.rule=Host(`${UPLOAD_URL}`)'
       - 'traefik.http.routers.upload.entrypoints=web'
-      - 'traefik.http.routers.ims.middlewares=cors'
     networks:
       network_1:
         aliases:
@@ -241,5 +239,6 @@ services:
           - upload
     volumes:
       - '${IMS_STORAGE_PATH_HOST}:${IMS_STORAGE_PATH}'
+      - '${IMS_BUFFER_PATH_HOST}:/tmp/uploaded'
     expose:
       - '80'
