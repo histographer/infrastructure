@@ -1,9 +1,16 @@
 # HISTOGRAPHER INFRASTRUCTURE #
+You need to have docker and docker-compose installed
 
 # Installation
 - Create a copy of `.env.sample` with the name `.env`
 - Fill the `.env` file where appropriate
 
+## Local Development 
+- run `docker-compose -f docker-compose.traefik.yml up -d` to run the traefik container
+- run `docker-compose -f docker-compose.cytomine.yml up -d` to run the cytomine service
+
+
+/// UNDER HERE IS OLD/UNDER PROGRESS PLEASE IGNORE UNTIL THIS IS REMOVED
 ## Local Development
 - run `./generate_secrets.sh --dev` to fill .env with secrets for local development
 - run `docker-compose up -d` to deploy
@@ -18,6 +25,7 @@ And don't forget to add the following to your `/etc/hosts` file:
 127.0.0.1   localhost-compare-backend
 127.0.0.1   localhost-analysis-rest-api
 ```
+
 ## Production 
 - run `./generate_secrets.sh` to create docker secrets
 - run `docker-compose config | docker stack deploy -c - prod` to deploy
