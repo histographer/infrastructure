@@ -8,6 +8,8 @@ services:
     image: traefik:v2.0.4
     restart: always
     container_name: traefik
+    env_file:
+      - '.env'
     ports:
       - '80:80' # <== http
       - '8787:8080' # <== :8080 is where the dashboard runs on
@@ -16,9 +18,9 @@ services:
       #### These are the CLI commands that will configure Traefik and tell it how to work! ####
       ## API Settings - https://docs.traefik.io/operations/api/, endpoints - https://docs.traefik.io/operations/api/#endpoints ##
       - --api.insecure=false # <== Enabling insecure api, NOT RECOMMENDED FOR PRODUCTION
-      - --api.dashboard=true # <== Enabling the dashboard to view services, middlewares, routers, etc...
+      - --api.dashboard=${TRAEFIK_DASHBOARD_ENABLED} # <== Enabling the dashboard to view services, middlewares, routers, etc...
       - --api.debug=true # <== Enabling additional endpoints for debugging and profiling
-      - --log.level=DEBUG # <== Setting the level of the logs from traefik
+      - --log.level=${TRAEFIK_LOG_LEVEL} # <== Setting the level of the logs from traefik
       - --providers.docker=true # <== Enabling docker as the provider for traefik
       - --providers.docker.network=traefik # <== Operate on the docker network named web
       - --entrypoints.web.address=:80 # <== Defining an entrypoint for port :80 named web
@@ -27,8 +29,8 @@ services:
     networks:
       - traefik # <== Placing traefik on the network named web, to access containers on this network
     labels:
-      - 'traefik.enable=true' # <== Enable traefik on itself to view dashboard and assign subdomain to view it
-      - 'traefik.http.routers.api.rule=Host(`api.localhost`)' # <== Setting the domain for the dashboard
+      - 'traefik.enable=${TRAEFIK_DASHBOARD_ENABLED}' # <== Enable traefik on itself to view dashboard and assign subdomain to view it
+      - 'traefik.http.routers.api.rule=Host(`${TRAEFIK_DASHBOARD_URL}`)' # <== Setting the domain for the dashboard
       - 'traefik.http.routers.api.service=api@internal' # <== Enabling the api to be a service to access
       - 'traefik.http.middlewares.cors.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST'
       - 'traefik.http.middlewares.cors.headers.accesscontrolalloworigin=http://${CORE_URL}, ${IMS_URL1}, ${IMS_URL2}, ${UPLOAD_URL}, ${COMPARE_FRONTEND_URL}, ${COMPARE_BACKEND_URL}, ${ANALYSIS_URL}'
