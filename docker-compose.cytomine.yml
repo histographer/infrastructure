@@ -80,7 +80,7 @@ services:
     env_file:
       - '.env'
     build:
-      context: './memcached'
+      context: './cytomine/memcached'
     image: 'docker.pkg.github.com/histographer/infrastructure/memcached'
     restart: always
     networks:
@@ -94,7 +94,7 @@ services:
     env_file:
       - '.env'
     build:
-      context: './iipOff'
+      context: './cytomine/iipOff'
     image: 'docker.pkg.github.com/histographer/infrastructure/iipoff'
     depends_on:
       - memcached
@@ -118,7 +118,7 @@ services:
     env_file:
       - '.env'
     build:
-      context: './iipCyto'
+      context: './cytomine/iipCyto'
     image: 'docker.pkg.github.com/histographer/infrastructure/iipcyto'
     restart: always
     networks:
@@ -139,7 +139,7 @@ services:
     env_file:
       - '.env'
     build:
-      context: './ims'
+      context: './cytomine/ims'
     image: 'docker.pkg.github.com/histographer/infrastructure/ims'
     restart: always
     depends_on:
@@ -202,7 +202,7 @@ services:
     env_file:
       - '.env'
     build:
-      context: './software_router'
+      context: './cytomine/software_router'
     image: 'docker.pkg.github.com/histographer/infrastructure/software_router'
     privileged: true
     depends_on:
@@ -220,7 +220,7 @@ services:
     env_file:
       - '.env'
     build:
-      context: './upload'
+      context: './cytomine/upload'
     image: 'docker.pkg.github.com/histographer/infrastructure/upload'
     restart: always
     networks:
