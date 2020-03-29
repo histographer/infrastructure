@@ -9,6 +9,9 @@ You need to have docker and docker-compose installed
 - run `docker-compose -f docker-compose.traefik.yml up -d` to run the traefik container
 - run `docker-compose -f docker-compose.cytomine.yml up -d` to run the cytomine service
 
+### Mac OS specifics
+You need to create local folders that you specify under `#the storage path for your server` in .env. Make sure you have the correct path and have access to the folders. If you do not do this correctly, you will not be able to upload images.
+
 
 /// UNDER HERE IS OLD/UNDER PROGRESS PLEASE IGNORE UNTIL THIS IS REMOVED
 ## Local Development
