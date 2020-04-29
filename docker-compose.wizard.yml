@@ -1,0 +1,64 @@
+version: '3.1'
+
+services:
+  mongo:
+    env_file:
+      - .env
+    container_name: ${WIZARD_MONGO_CONTAINER_NAME}
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile.init_mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${WIZARD_MONGODB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${WIZARD_MONGODB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${WIZARD_MONGODB_DATABASE}
+    volumes:
+      - mongodevdata:/data/db
+    networks:
+        mongo:
+          aliases:
+            - mongodb
+  
+  wizard_backend:
+    env_file:
+      - .env
+    container_name: ${WIZARD_BACKEND_CONTAINER_NAME}
+    image: docker.pkg.github.com/histographer/wizard-backend/wizard-backend
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.wizard-backend.rule=Host(`${WIZARD_BACKEND_URL}`)'
+      - 'traefik.http.routers.wizard-backend.entrypoints=web'
+    restart: always
+    environment:
+      WIZARD_MONGODB_HOST: ${WIZARD_MONGO_CONTAINER_NAME}
+    networks:
+        mongo:
+          aliases:
+            - wizard-backend 
+        traefik:
+
+  analysis:
+    container_name: analysis
+    env_file:
+      - '.env'
+    image: docker.pkg.github.com/histographer/analysis-rest-api/analysis-rest-api:latest
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.analysis.rule=Host(`${ANALYSIS_URL}`)'
+      - 'traefik.http.routers.analysis.entrypoints=web'
+    expose:
+        - 80 
+    networks:
+        - traefik
+        
+
+networks:
+    traefik:
+        external: true
+    mongo:
+volumes:
+  mongodevdata:
+
+
+
