@@ -33,7 +33,7 @@ services:
       - 'traefik.http.routers.api.rule=Host(`${TRAEFIK_DASHBOARD_URL}`)' # <== Setting the domain for the dashboard
       - 'traefik.http.routers.api.service=api@internal' # <== Enabling the api to be a service to access
       - 'traefik.http.middlewares.cors.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST'
-      - 'traefik.http.middlewares.cors.headers.accesscontrolalloworigin=http://${CORE_URL}, ${IMS_URL1}, ${IMS_URL2}, ${UPLOAD_URL}, ${COMPARE_FRONTEND_URL}, ${COMPARE_BACKEND_URL}, ${ANALYSIS_URL}, ${UPLOAD_URL}'
+      - 'traefik.http.middlewares.cors.headers.accesscontrolalloworigin=http://${CORE_URL}, ${IMS_URL1}, ${IMS_URL2}, ${UPLOAD_URL}, ${COMPARE_FRONTEND_URL}, ${COMPARE_BACKEND_URL}, ${ANALYSIS_URL}, ${UPLOAD_URL}, ${WIZARD_BACKEND_URL}'
       - 'traefik.http.middlewares.cors.headers.accessControlAllowCredentials=TRUE'
       - 'traefik.http.middlewares.cors.headers.accesscontrolmaxage=100'
       - 'traefik.http.middlewares.cors.headers.accessControlAllowHeaders=Authorization,Accept,Origin,DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range, X-CSRF-Token'

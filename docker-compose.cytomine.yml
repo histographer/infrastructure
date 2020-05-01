@@ -185,11 +185,12 @@ services:
     env_file:
       - '.env'
     restart: always
-    image: 'docker.pkg.github.com/histographer/wizard-frontend/digipat-frontend'
+    image: 'docker.pkg.github.com/histographer/wizard-frontend/wizard-frontend:prod'
     labels:
       - 'traefik.enable=true'
       - 'traefik.http.routers.digipat-frontend.rule=Host(`${CORE_URL}`)'
       - 'traefik.http.routers.digipat-frontend.entrypoints=web'
+      - 'traefik.http.routers.digipat.middlewares=cors'
     networks:
       traefik:
         aliases:
