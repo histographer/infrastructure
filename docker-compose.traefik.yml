@@ -37,7 +37,7 @@ services:
       - 'traefik.http.middlewares.cors.headers.accessControlAllowCredentials=TRUE'
       - 'traefik.http.middlewares.cors.headers.accesscontrolmaxage=100'
       - 'traefik.http.middlewares.cors.headers.accessControlAllowHeaders=Authorization,Accept,Origin,DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range, X-CSRF-Token'
-      - 'traefik.http.middlewares.cors.headers.customResponseHeaders.Access-Control-Allow-Origin=*'
+      - 'traefik.http.middlewares.corsReq.headers.customResponseHeaders.Access-Control-Allow-Origin=*'
       - 'traefik.http.middlewares.cors.headers.customRequestHeaders.Access-Control-Allow-Origin=*'
 
 networks:
