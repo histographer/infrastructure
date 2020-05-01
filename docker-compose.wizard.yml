@@ -29,6 +29,7 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.routers.wizard-backend.rule=Host(`${WIZARD_BACKEND_URL}`)'
       - 'traefik.http.routers.wizard-backend.entrypoints=web'
+      - 'traefik.http.routers.digipat.middlewares=cors'
     restart: always
     environment:
       WIZARD_MONGODB_HOST: ${WIZARD_MONGO_CONTAINER_NAME}
