@@ -190,7 +190,7 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.routers.digipat-frontend.rule=Host(`${CORE_URL}`)'
       - 'traefik.http.routers.digipat-frontend.entrypoints=web'
-      - 'traefik.http.routers.ims.middlewares=corsReq'
+      - 'traefik.http.routers.digipat-frontend.middlewares=corsReq'
     networks:
       traefik:
         aliases:
