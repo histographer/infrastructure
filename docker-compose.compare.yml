@@ -13,22 +13,8 @@ services:
       - mongodata:/data/db
       - ./database/db-init/:/docker-entrypoint-initdb.d
 
-  analysis_backend:
-    image: docker.pkg.github.com/histographer/analysis-rest-api/analysis-rest-api:latest
-    container_name: analysis_backend
-    env_file:
-      - '.env'
-    networks:
-      - traefik
-    expose:
-      - 80
-    labels:
-      - 'traefik.enable=true' # <== Enable traefik to proxy this container
-      - 'traefik.http.routers.compare-analysis.rule=Host(`analysis.digipat.no`)' # <== Your Domain Name goes here for the http rule
-      - 'traefik.http.routers.compare-analysis.entrypoints=web' # <== Defining the entrypoint for http, **ref: line 30
-
   compare_frontend:
-    image: docker.pkg.github.com/histographer/compare-frontend/compare-frontend:dev
+    image: docker.pkg.github.com/histographer/compare-frontend/compare-frontend:prod
     container_name: compare_frontend
     networks:
       - traefik
@@ -48,6 +34,7 @@ services:
       - 'traefik.enable=true' # <== Enable traefik to proxy this container
       - 'traefik.http.routers.compare-backend.rule=Host(`${COMPARE_BACKEND_URL}`)' # <== Your Domain Name goes here for the http rule
       - 'traefik.http.routers.compare-backend.entrypoints=web' # <== Defining the entrypoint for http, **ref: line 30
+      - 'traefik.http.routers.compare-backend.middlewares=cors' # <== Defining the entrypoint for http, **ref: line 30
     ports:
       - 9292:8080
 volumes:
