@@ -34,7 +34,6 @@ services:
       - 'traefik.enable=true' # <== Enable traefik to proxy this container
       - 'traefik.http.routers.compare-backend.rule=Host(`${COMPARE_BACKEND_URL}`)' # <== Your Domain Name goes here for the http rule
       - 'traefik.http.routers.compare-backend.entrypoints=web' # <== Defining the entrypoint for http, **ref: line 30
-      - 'traefik.http.routers.compare-backend.middlewares=cors' # <== Defining the entrypoint for http, **ref: line 30
     ports:
       - 9292:8080
 volumes:
