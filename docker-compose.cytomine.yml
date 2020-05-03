@@ -99,9 +99,6 @@ services:
       - 'traefik.enable=true' # <== Enable traefik on itself to view dashboard and assign subdomain to view it
       - 'traefik.http.routers.iipoff.rule=Host(`${IIP_OFF_URL}`)'
       - 'traefik.http.routers.iipoff.entrypoints=web'
-      - "traefik.http.routers.iipoff-secured.rule=Host(`${IIP_OFF_URL}`)" # <== Your Domain Name for the https rule 
-      - "traefik.http.routers.iipoff-secured.entrypoints=web-secured" # <== Defining entrypoint for https
-      - "traefik.http.routers.iipoff-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
     networks:
       network_1:
         aliases:
@@ -126,9 +123,6 @@ services:
       - 'traefik.enable=true' # <== Enable traefik on itself to view dashboard and assign subdomain to view it
       - 'traefik.http.routers.iipcyto.rule=Host(`${IIP_CYTO_URL}`)'
       - 'traefik.http.routers.iipcyto.entrypoints=web'
-      - "traefik.http.routers.iipcyto-secured.rule=Host(`${IIP_CYTO_URL}`)" # <== Your Domain Name for the https rule 
-      - "traefik.http.routers.iipcyto-secured.entrypoints=web-secured" # <== Defining entrypoint for https
-      - "traefik.http.routers.iipcyto-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
     networks:
       network_1:
         aliases:
