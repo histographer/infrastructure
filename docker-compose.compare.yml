@@ -42,6 +42,7 @@ services:
       - "traefik.http.routers.compare-backend-secured.rule=Host(`${COMPARE_BACKEND_URL}`)" # <== Your Domain Name for the https rule 
       - "traefik.http.routers.compare-backend-secured.entrypoints=web-secured" # <== Defining entrypoint for https
       - "traefik.http.routers.compare-backend-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
+      - "traefik.http.routers.compare-backend-secured.middlewares=cors"
     ports:
       - 9292:8080
 volumes:
