@@ -30,6 +30,10 @@ services:
       - 'traefik.http.routers.wizard-backend.rule=Host(`${WIZARD_BACKEND_URL}`)'
       - 'traefik.http.routers.wizard-backend.entrypoints=web'
       - 'traefik.http.routers.wizard-backend.middlewares=cors'
+      - "traefik.http.routers.wizard-backend.middlewares=redirect@file" # <== This is a middleware to redirect to https
+      - "traefik.http.routers.wizard-backend-secured.rule=Host(`${WIZARD_BACKEND_URL}`)" # <== Your Domain Name for the https rule 
+      - "traefik.http.routers.wizard-backend-secured.entrypoints=web-secured" # <== Defining entrypoint for https 
+      - "traefik.http.routers.wizard-backend-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
     restart: always
     environment:
       WIZARD_MONGODB_HOST: ${WIZARD_MONGO_CONTAINER_NAME}
@@ -48,6 +52,10 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.routers.analysis.rule=Host(`${ANALYSIS_URL}`)'
       - 'traefik.http.routers.analysis.entrypoints=web'
+      - "traefik.http.routers.analysis.middlewares=redirect@file" # <== This is a middleware to redirect to https
+      - "traefik.http.routers.analysis-secured.rule=Host(`${ANALYSIS_URL}`)" # <== Your Domain Name for the https rule 
+      - "traefik.http.routers.analysis-secured.entrypoints=web-secured" # <== Defining entrypoint for https 
+      - "traefik.http.routers.analysis-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
     expose:
         - 80 
     networks:
