@@ -13,7 +13,7 @@ services:
     ports:
       - '80:80' # <== http
       - '8787:8080' # <== :8080 is where the dashboard runs on
-      #- "443:443" # <== https
+      - "443:443" # <== https
     command:
       #### These are the CLI commands that will configure Traefik and tell it how to work! ####
       ## API Settings - https://docs.traefik.io/operations/api/, endpoints - https://docs.traefik.io/operations/api/#endpoints ##

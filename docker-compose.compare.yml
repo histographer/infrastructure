@@ -24,7 +24,7 @@ services:
       - 'traefik.http.routers.compare-frontend.entrypoints=web' # <== Defining the entrypoint for http, 
       - "traefik.http.routers.compare-frontend.middlewares=redirect@file" # <== This is a middleware to redirect to https
       - "traefik.http.routers.compare-frontend-secured.rule=Host(`${COMPARE_BACKEND_URL}`)" # <== Your Domain Name for the https rule 
-      - "traefik.http.routers.compare-frontend-secured.entrypoints=web-secured" # <== Defining entrypoint for https, **ref: line 31
+      - "traefik.http.routers.compare-frontend-secured.entrypoints=web-secured" # <== Defining entrypoint for https 
       - "traefik.http.routers.compare-frontend-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
 
   compare_backend:
@@ -40,7 +40,7 @@ services:
       - 'traefik.http.routers.compare-backend.entrypoints=web' # <== Defining the entrypoint for http
       - "traefik.http.routers.compare-backend.middlewares=redirect@file" # <== This is a middleware to redirect to https
       - "traefik.http.routers.compare-backend-secured.rule=Host(`${COMPARE_BACKEND_URL}`)" # <== Your Domain Name for the https rule 
-      - "traefik.http.routers.compare-backend-secured.entrypoints=web-secured" # <== Defining entrypoint for https, **ref: line 31
+      - "traefik.http.routers.compare-backend-secured.entrypoints=web-secured" # <== Defining entrypoint for https
       - "traefik.http.routers.compare-backend-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
     ports:
       - 9292:8080
