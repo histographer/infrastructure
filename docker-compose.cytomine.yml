@@ -99,6 +99,9 @@ services:
       - 'traefik.enable=true' # <== Enable traefik on itself to view dashboard and assign subdomain to view it
       - 'traefik.http.routers.iipoff.rule=Host(`${IIP_OFF_URL}`)'
       - 'traefik.http.routers.iipoff.entrypoints=web'
+      - "traefik.http.routers.iipoff-secured.rule=Host(`${IIP_OFF_URL}`)" # <== Your Domain Name for the https rule 
+      - "traefik.http.routers.iipoff-secured.entrypoints=web-secured" # <== Defining entrypoint for https
+      - "traefik.http.routers.iipoff-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
     networks:
       network_1:
         aliases:
@@ -123,6 +126,9 @@ services:
       - 'traefik.enable=true' # <== Enable traefik on itself to view dashboard and assign subdomain to view it
       - 'traefik.http.routers.iipcyto.rule=Host(`${IIP_CYTO_URL}`)'
       - 'traefik.http.routers.iipcyto.entrypoints=web'
+      - "traefik.http.routers.iipcyto-secured.rule=Host(`${IIP_CYTO_URL}`)" # <== Your Domain Name for the https rule 
+      - "traefik.http.routers.iipcyto-secured.entrypoints=web-secured" # <== Defining entrypoint for https
+      - "traefik.http.routers.iipcyto-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
     networks:
       network_1:
         aliases:
@@ -149,6 +155,10 @@ services:
       - 'traefik.http.routers.ims.rule=Host(`${IMS_URL1}`,`${IMS_URL2}`)'
       - 'traefik.http.routers.ims.middlewares=cors'
       - 'traefik.http.routers.ims.entrypoints=web'
+      - "traefik.http.routers.ims-secured.rule=Host(`${IMS_URL1}`,`${IMS_URL2}`)" # <== Your Domain Name for the https rule 
+      - "traefik.http.routers.ims-secured.entrypoints=web-secured" # <== Defining entrypoint for https
+      - "traefik.http.routers.ims-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
+      - 'traefik.http.routers.ims-secured.middlewares=cors'
     networks:
       network_1:
         aliases:
@@ -173,6 +183,9 @@ services:
       - 'traefik.enable=true' # <== Enable traefik to proxy this container
       - 'traefik.http.routers.core.rule=Host(`${CORE_URL}`) && PathPrefix(`/api`, `/j_spring_security`, `/login`, `/logout`, `/server`, `/session`, `/custom-ui`, `/static`, `/restApiDoc`, `/js/jsondoc`, `/css/jsondoc`)'
       - 'traefik.http.routers.core.entrypoints=web'
+      - 'traefik.http.routers.core-secured.rule=Host(`${CORE_URL}`) && PathPrefix(`/api`, `/j_spring_security`, `/login`, `/logout`, `/server`, `/session`, `/custom-ui`, `/static`, `/restApiDoc`, `/js/jsondoc`, `/css/jsondoc`)'
+      - "traefik.http.routers.core-secured.entrypoints=web-secured" # <== Defining entrypoint for https
+      - "traefik.http.routers.core-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
     networks:
       network_3:
         aliases:
@@ -191,6 +204,10 @@ services:
       - 'traefik.http.routers.digipat-frontend.rule=Host(`${CORE_URL}`)'
       - 'traefik.http.routers.digipat-frontend.entrypoints=web'
       - 'traefik.http.routers.digipat-frontend.middlewares=cors'
+      - 'traefik.http.routers.digipat-frontend-secured.middlewares=cors'
+      - 'traefik.http.routers.digipat-frontend-secured.rule=Host(`${CORE_URL}`)'
+      - "traefik.http.routers.digipat-frontend-secured.entrypoints=web-secured" # <== Defining entrypoint for https
+      - "traefik.http.routers.digipat-frontend-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
     networks:
       traefik:
         aliases:
@@ -228,6 +245,9 @@ services:
       - 'traefik.enable=true' # <== Enable traefik on itself to view dashboard and assign subdomain to view it
       - 'traefik.http.routers.upload.rule=Host(`${UPLOAD_URL}`)'
       - 'traefik.http.routers.upload.entrypoints=web'
+      - 'traefik.http.routers.upload-secured.rule=Host(`${UPLOAD_URL}`)'
+      - "traefik.http.routers.upload-secured.entrypoints=web-secured" # <== Defining entrypoint for https
+      - "traefik.http.routers.upload-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
     networks:
       network_1:
         aliases:
