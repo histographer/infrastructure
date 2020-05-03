@@ -21,7 +21,11 @@ services:
     labels:
       - 'traefik.enable=true' # <== Enable traefik to proxy this container
       - 'traefik.http.routers.compare-frontend.rule=Host(`${COMPARE_FRONTEND_URL}`)' # <== Your Domain Name goes here for the http rule
-      - 'traefik.http.routers.compare-frontend.entrypoints=web' # <== Defining the entrypoint for http, **ref: line 30
+      - 'traefik.http.routers.compare-frontend.entrypoints=web' # <== Defining the entrypoint for http, 
+      - "traefik.http.routers.compare-frontend.middlewares=redirect@file" # <== This is a middleware to redirect to https
+      - "traefik.http.routers.compare-frontend-secured.rule=Host(`${COMPARE_BACKEND_URL}`)" # <== Your Domain Name for the https rule 
+      - "traefik.http.routers.compare-frontend-secured.entrypoints=web-secured" # <== Defining entrypoint for https, **ref: line 31
+      - "traefik.http.routers.compare-frontend-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
 
   compare_backend:
     image: docker.pkg.github.com/histographer/compare-backend/compare-backend:prod
@@ -33,7 +37,11 @@ services:
     labels:
       - 'traefik.enable=true' # <== Enable traefik to proxy this container
       - 'traefik.http.routers.compare-backend.rule=Host(`${COMPARE_BACKEND_URL}`)' # <== Your Domain Name goes here for the http rule
-      - 'traefik.http.routers.compare-backend.entrypoints=web' # <== Defining the entrypoint for http, **ref: line 30
+      - 'traefik.http.routers.compare-backend.entrypoints=web' # <== Defining the entrypoint for http
+      - "traefik.http.routers.compare-backend.middlewares=redirect@file" # <== This is a middleware to redirect to https
+      - "traefik.http.routers.compare-backend-secured.rule=Host(`${COMPARE_BACKEND_URL}`)" # <== Your Domain Name for the https rule 
+      - "traefik.http.routers.compare-backend-secured.entrypoints=web-secured" # <== Defining entrypoint for https, **ref: line 31
+      - "traefik.http.routers.compare-backend-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
     ports:
       - 9292:8080
 volumes:
