@@ -1,0 +1,24 @@
+version: '3.1'
+
+services:
+  analysis:
+    container_name: analysis
+    env_file:
+      - '.env'
+    image: docker.pkg.github.com/histographer/analysis-rest-api/analysis-rest-api:latest
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.analysis.rule=Host(`${ANALYSIS_URL}`)'
+      - 'traefik.http.routers.analysis.entrypoints=web'
+      - "traefik.http.routers.analysis.middlewares=redirect@file" # <== This is a middleware to redirect to https
+      - "traefik.http.routers.analysis-secured.rule=Host(`${ANALYSIS_URL}`)" # <== Your Domain Name for the https rule 
+      - "traefik.http.routers.analysis-secured.entrypoints=web-secured" # <== Defining entrypoint for https 
+      - "traefik.http.routers.analysis-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
+    expose:
+        - 80 
+    networks:
+        - traefik
+
+networks:
+    traefik:
+        external: true
