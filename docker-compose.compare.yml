@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  mongo:
+  mongo_compare:
     image: mongo:latest
     container_name: compare_mongo
     restart: always
