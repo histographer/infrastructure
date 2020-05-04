@@ -34,6 +34,7 @@ services:
       - "traefik.http.routers.wizard-backend-secured.rule=Host(`${WIZARD_BACKEND_URL}`)" # <== Your Domain Name for the https rule 
       - "traefik.http.routers.wizard-backend-secured.entrypoints=web-secured" # <== Defining entrypoint for https 
       - "traefik.http.routers.wizard-backend-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
+      - 'traefik.http.routers.wizard-backend-secured.middlewares=cors'
     restart: always
     environment:
       WIZARD_MONGODB_HOST: ${WIZARD_MONGO_CONTAINER_NAME}

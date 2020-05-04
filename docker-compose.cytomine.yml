@@ -149,7 +149,7 @@ services:
       - 'traefik.http.routers.ims.rule=Host(`${IMS_URL1}`,`${IMS_URL2}`)'
       - 'traefik.http.routers.ims.middlewares=cors'
       - 'traefik.http.routers.ims.entrypoints=web'
-      - "traefik.http.routers.ims.middlewares=redirect@file" # <== This is a middleware to redirect to https
+        # - "traefik.http.routers.ims.middlewares=redirect@file" # <== This is a middleware to redirect to https
       - "traefik.http.routers.ims-secured.rule=Host(`${IMS_URL1}`,`${IMS_URL2}`)" # <== Your Domain Name for the https rule 
       - "traefik.http.routers.ims-secured.entrypoints=web-secured" # <== Defining entrypoint for https
       - "traefik.http.routers.ims-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
