@@ -8,31 +8,15 @@ You need to have docker and docker-compose installed
 ## Local Development 
 - run `docker-compose -f docker-compose.traefik.yml up -d` to run the traefik container
 - run `docker-compose -f docker-compose.cytomine.yml up -d` to run the cytomine service
+- run `docker-compose -f docker-compose.analysis.yml up -d` to run the analysis service
+- run `docker-compose -f docker-compose.wizard.yml up -d` to run the wizard service
+- run `docker-compose -f docker-compose.compare.yml up -d` to run the compare service
 
 ### Mac OS specifics
 You need to create local folders that you specify under `#the storage path for your server` in .env. Make sure you have the correct path and have access to the folders. If you do not do this correctly, you will not be able to upload images.
 
-
-/// UNDER HERE IS OLD/UNDER PROGRESS PLEASE IGNORE UNTIL THIS IS REMOVED
-## Local Development
-- run `./generate_secrets.sh --dev` to fill .env with secrets for local development
-- run `docker-compose up -d` to deploy
-
-And don't forget to add the following to your `/etc/hosts` file:
-```
-127.0.0.1   localhost-core
-127.0.0.1   localhost-ims
-127.0.0.1   localhost-ims2
-127.0.0.1   localhost-upload
-127.0.0.1   localhost-compare-frontend
-127.0.0.1   localhost-compare-backend
-127.0.0.1   localhost-analysis-rest-api
-```
-
 ## Production 
-- run `./generate_secrets.sh` to create docker secrets
-- run `docker-compose config | docker stack deploy -c - prod` to deploy
+To create safe passwords, we recommend to run `./generate_secrets.sh` and copy the passwords that are generated over to `.env`.
 
-# Update services
-To push a new version of a service with its own dockerfile in this repo, use:
-`docker-compose build <service> && docker-compose push <service>`
+You can follow the same proceedure as with local development if you only intend to run some of the services. 
+If you want to run all services, run `./docker-containers-up.sh` and they will deploy.
